@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+from lxml import html
+import urllib.request
+import sys
+import os
+import time
+
+url_file = sys.argv[1]
+out_dir = sys.argv[2]
+with open(url_file, 'r') as f:
+    urls = f.read().split()
+
+def get_req(url):
+    filename = url[8:-1].replace('.', '_').replace('/', '_') + '.txt'
+    path = os.path.join(out_dir, filename)
+    if os.path.exists(path):
+        sys.stderr.write('skipping...\n')
+        return
+    sys.stderr.write(f'{url} -> {path}\n')
+    # time.sleep(0.5)
+
+    with urllib.request.urlopen(url) as response:
+        page = response.read()
+    doc = html.fromstring(page)
+
+    items = doc.xpath("//div[@class='cikk-torzs']/p")
+    s = ''
+    for item in items:
+        s += item.text_content() + ' '
+
+    with open(path, 'w') as f:
+        f.write(s)
+
+l = len(urls)
+for i, url in enumerate(urls):
+    sys.stderr.write(f'{i/l*100:0.2f}%\n')
+    while True:
+        try:
+            get_req(url)
+        except KeyboardInterrupt:
+            exit(1)
+        except urllib.error.HTTPError as e:
+            if e.code == 509:
+                sys.stderr.write(f'got 509, trying again...\n')
+                time.sleep(1)
+                continue
+            if e.code != 404:
+                raise e
+        break
