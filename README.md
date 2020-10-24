@@ -10,7 +10,7 @@ TODO
 
 # Database
 We scraped two major hungarian news websites: `index.hu`, and `origo.hu`. The two datasets are available here:
-- (index.zip)[https://kuruczgy.com/u/Auwna30x/index.zip]
+- [index.zip](https://kuruczgy.com/u/Auwna30x/index.zip)
 
 ## Method
 - We used `scrape/index` to generate a list of article URLs.
