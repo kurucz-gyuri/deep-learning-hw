@@ -6,7 +6,7 @@
 - Józsa György
 
 ## Topic
-Our aim is to train a neural network to be able to generate Hungarian news articles based on the style of multiple news media, namely `origo.hu` and `index.hu`. On supplying the network with an initial prompt (the beginning sentence or paragraph on article), we expect an output of an entire article.
+Our aim is to train a neural network to be able to generate Hungarian news articles based on the style of multiple news media, namely `origo.hu` and `index.hu`. On supplying the network with an initial prompt (the beginning sentence or paragraph of an article), we expect an output of an entire article.
 
 ## Database
 We scraped two major hungarian news websites: `index.hu`, and `origo.hu`. What we extracted is the plaintext data of tens of thousands of news articles.
