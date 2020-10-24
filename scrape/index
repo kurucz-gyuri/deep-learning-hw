@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+
+import urllib.request
+import json
+import sys
+
+def get_page(page):
+    url = 'https://index.hu/api/json/'
+    data = f"datum=2020-10-24&rovat=24ora%2F&url_params%5BalllowRovatChoose%5D=1&url_params%5Big%5D=2020-10-24&url_params%5Bpepe%5D=1&url_params%5Btol%5D=1999-01-01&url_params%5Bword%5D=1&url_params%5Bs%5D=&url_params%5Bp%5D={page}"
+
+    with urllib.request.urlopen(url, data=data.encode()) as response:
+        page = response.read()
+    r = json.loads(page)
+    return { 'https:' + i['url'] for i in r['list'] }
+
+urls = set()
+for i in range(500, 2000):
+    sys.stderr.write(f"page {i}\n")
+    urls.update(get_page(i))
+for url in urls:
+    print(url)

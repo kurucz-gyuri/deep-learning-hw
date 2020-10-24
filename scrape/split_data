@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+import sys, os
+
+infile = sys.argv[1]
+outdir = sys.argv[2]
+
+splits = [
+    ('train.txt', 7),
+    ('valid.txt', 8),
+    ('test.txt', 9)
+]
+mod = 10
+
+fs = {}
+for k, v in splits:
+    path = os.path.join(outdir, k)
+    fs[k] = open(path, 'w')
+
+with open(infile, 'r') as f:
+    for i, line in enumerate(f):
+        val = i % mod
+        for k, v in splits:
+            if val <= v:
+                fs[k].write(line)
+                break
+for v in fs.values():
+    v.close()

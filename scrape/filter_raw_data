@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+
+import sys, os
+import random
+
+charset = { chr(i) for i in range(ord('a'), ord('z') + 1) }
+charset.update(set("áéíóöőúüű"))
+charset.update(set("0123456789"))
+charset.update(set("!\"#$%&'()*+,-./:;<=>?"))
+charset.update({ i.upper() for i in charset })
+charset.add(' ')
+
+
+indir = sys.argv[1]
+
+bad_chars = set()
+list_dir = list(os.listdir(indir))
+random.shuffle(list_dir)
+for filename in list_dir:
+    if not filename.endswith('.txt'):
+        continue
+    path = os.path.join(indir, filename)
+    with open(path, 'r') as f:
+        raw_data = f.read()
+    data = ''.join(c for c in raw_data if c in charset)
+    if len(data) < 16: continue
+    print(data)
