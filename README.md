@@ -10,7 +10,7 @@ Our aim is to train a neural network to be able to generate Hungarian news artic
 
 ## Database
 We scraped two major hungarian news websites: `index.hu`, and `origo.hu`. What we extracted is the plaintext data of tens of thousands of news articles.
-- The dataset for index.hu is available here: [index.zip](https://kuruczgy.com/u/Auwna30x/index.zip)
+- The dataset for index.hu is available here: [index.zip](https://kuruczgy.com/u/Auwna30x/index.zip) (SHA1: 065f4005cdfd7caad9fde1b08b931d3eedab9755)
 - The dataset for origo.hu is available in the repository's `data` folder.
 
 ## Method
