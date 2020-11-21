@@ -1,3 +1,4 @@
+# some code based on: https://www.tensorflow.org/tutorials/text/transformer
 import tensorflow_datasets as tfds
 import tensorflow as tf
 import tensorflow_probability as tfp
