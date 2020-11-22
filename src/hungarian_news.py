@@ -11,14 +11,18 @@ import transformer as trf
 
 import os
 
-BUFFER_SIZE = 20000
+# training parameters
 BATCH_SIZE = 64
 MAX_LENGTH = 256
 
-num_layers = 4
-d_model = 128
-dff = 512
-num_heads = 8
+# transformer hyperparameters
+num_layers = 6 # number of decoder layers
+d_model = 512 # embedding dimension
+num_heads = 8 # number of attention heads
+dff = 2048 # neurons in feed-forward sublayers
+
+rel = 0
+model_key = f'hungarian_news-{num_layers}-{d_model}-{num_heads}-{dff}-{rel}'
 
 def load_raw_training_data():
     print("Loading raw training data into memory")
@@ -61,6 +65,7 @@ def build_training_data(raw_training_data, tokenizer_hu):
     ds_train = raw_train.map(tf_encode)
     ds_train = ds_train.map(cut_max_length)
     ds_train = ds_train.cache()
+    BUFFER_SIZE = 20000
     ds_train = ds_train.shuffle(BUFFER_SIZE).padded_batch(BATCH_SIZE)
     ds_train = ds_train.prefetch(tf.data.experimental.AUTOTUNE)
 
@@ -75,7 +80,7 @@ def create_masks(inp, tar):
 
   # Used in the 2nd attention block in the decoder.
   # This padding mask is used to mask the encoder outputs.
-  dec_padding_mask = trf.create_padding_mask(inp)
+  dec_padding_mask = trf.create_padding_mask(tar)
 
   # Used in the 1st attention block in the decoder.
   # It is used to pad and mask future tokens in the input received by
@@ -87,9 +92,9 @@ def create_masks(inp, tar):
   return enc_padding_mask, combined_mask, dec_padding_mask
 
 def train(training_data, tokenizer_hu, epochs = 10):
+    printf(f'training; devices: {tf.config.list_physical_devices()}')
     train_dataset, val_dataset = training_data
 
-    input_vocab_size = tokenizer_hu.vocab_size + 2
     target_vocab_size = tokenizer_hu.vocab_size + 2
     dropout_rate = 0.1
     print(f'vocab_size: {tokenizer_hu.vocab_size}')
@@ -124,14 +129,12 @@ def train(training_data, tokenizer_hu, epochs = 10):
     train_accuracy = tf.keras.metrics.Mean(name='train_accuracy')
 
     transformer = trf.Transformer(num_layers, d_model, num_heads, dff,
-                              input_vocab_size, target_vocab_size,
-                              pe_input=input_vocab_size,
+                              target_vocab_size,
                               pe_target=target_vocab_size,
                               rate=dropout_rate)
 
-    checkpoint_path = "./checkpoints/train"
-    ckpt = tf.train.Checkpoint(transformer=transformer,
-                               optimizer=optimizer)
+    checkpoint_path = f'./checkpoints/{model_key}'
+    ckpt = tf.train.Checkpoint(transformer=transformer, optimizer=optimizer)
     ckpt_manager = tf.train.CheckpointManager(ckpt, checkpoint_path, max_to_keep=5)
 
     # if a checkpoint exists, restore the latest checkpoint.
@@ -153,7 +156,7 @@ def train(training_data, tokenizer_hu, epochs = 10):
     def train_step(tar):
         tar_inp = tar[:, :-1]
         tar_real = tar[:, 1:]
-        inp = tf.zeros(tf.shape(tar), tf.int64)
+        inp = tf.zeros(tf.shape(tar_inp), tf.int64)
 
         enc_padding_mask, combined_mask, dec_padding_mask = create_masks(inp, tar_inp)
 
@@ -193,7 +196,7 @@ def train(training_data, tokenizer_hu, epochs = 10):
         print(f'Time taken for 1 epoch: {(time.time() - start):.2f} secs\n')
     return transformer
 
-def evaluate(transformer, tokenizer_hu, prompt, max_len):
+def evaluate(transformer, tokenizer_hu, prompt, max_len, top_k):
     # TODO: remove input
     inp_sentence = tf.zeros([20], tf.int64)
     encoder_input = tf.expand_dims(inp_sentence, 0)
@@ -210,7 +213,7 @@ def evaluate(transformer, tokenizer_hu, prompt, max_len):
         # select the last word from the seq_len dimension
         predictions = predictions[: ,-1:, :]  # (batch_size, 1, vocab_size)
 
-        values, indices = tf.math.top_k(predictions, k=10)
+        values, indices = tf.math.top_k(predictions, k=top_k)
         indices = indices.numpy().reshape((-1,))
         values = values.numpy().reshape((-1,))
         dist = tfp.distributions.Categorical(probs=values)
@@ -228,8 +231,8 @@ def evaluate(transformer, tokenizer_hu, prompt, max_len):
 
     return tf.squeeze(output, axis=0), attention_weights
 
-def generate(transformer, tokenizer_hu, prompt, max_len = 32):
-    result, attention_weights = evaluate(transformer, tokenizer_hu, prompt, max_len)
+def generate(transformer, tokenizer_hu, prompt, max_len = 32, top_k = 3):
+    result, attention_weights = evaluate(transformer, tokenizer_hu, prompt, max_len, top_k)
 
     # print(f'Tokens: {result}')
     predicted_sentence = tokenizer_hu.decode([i for i in result if i < tokenizer_hu.vocab_size])
