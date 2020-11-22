@@ -92,7 +92,7 @@ def create_masks(inp, tar):
   return enc_padding_mask, combined_mask, dec_padding_mask
 
 def train(training_data, tokenizer_hu, epochs = 10):
-    printf(f'training; devices: {tf.config.list_physical_devices()}')
+    print(f'training; devices: {tf.config.list_physical_devices()}')
     train_dataset, val_dataset = training_data
 
     target_vocab_size = tokenizer_hu.vocab_size + 2
