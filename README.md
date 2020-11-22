@@ -1,4 +1,5 @@
 # Deep Learning Homework
+For a demo, see `demo.ipynb`.
 
 ## Team
 - Kurucz György
