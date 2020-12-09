@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 
 import transformer as trf
 
+import kerastuner
+
 import os
 
 # training parameters
@@ -60,137 +62,78 @@ def build_training_data(raw_training_data, tokenizer_hu):
     ds_train = ds_train.cache()
     BUFFER_SIZE = 5000
     ds_train = ds_train.shuffle(BUFFER_SIZE).padded_batch(BATCH_SIZE)
-    ds_train = ds_train.prefetch(tf.data.experimental.AUTOTUNE)
 
     ds_val = raw_val.map(tf_encode)
     ds_val = ds_val.map(cut_max_length)
     ds_val = ds_val.padded_batch(BATCH_SIZE)
     return (ds_train, ds_val)
 
-def create_masks(inp, tar):
-  # Encoder padding mask
-  enc_padding_mask = trf.create_padding_mask(inp)
-
-  # Used in the 2nd attention block in the decoder.
-  # This padding mask is used to mask the encoder outputs.
-  dec_padding_mask = trf.create_padding_mask(tar)
-
-  # Used in the 1st attention block in the decoder.
-  # It is used to pad and mask future tokens in the input received by
-  # the decoder.
-  look_ahead_mask = trf.create_look_ahead_mask(tf.shape(tar)[1])
-  dec_target_padding_mask = trf.create_padding_mask(tar)
-  combined_mask = tf.maximum(dec_target_padding_mask, look_ahead_mask)
-
-  return enc_padding_mask, combined_mask, dec_padding_mask
+def get_range_hp():
+    hp = kerastuner.engine.hyperparameters.HyperParameters()
+    hp.Int('num_layers', min_value=1, max_value=4),
+    hp.int('d_model', min_value=64, max_value=512, step=64),
+    hp.Int('num_heads', min_value=2, max_value=8),
+    hp.Int('dff', min_value=64, max_value=1024, step=64),
+    return hp
+def get_fixed_hp():
+    hp = kerastuner.engine.hyperparameters.HyperParameters()
+    hp.Fixed('num_layers', 2),
+    hp.Fixed('d_model', 128),
+    hp.Fixed('num_heads', 2),
+    hp.Fixed('dff', 128),
+    return hp
 
 def get_model_builder(tokenizer):
     def build_model(hp):
         # transformer hyperparameters
-        num_layers = 4 # number of decoder layers
-        d_model = 256 # embedding dimension
-        num_heads = 4 # number of attention heads
-        dff = 256 # neurons in feed-forward sublayers
-        dropout_rate = 0.1
+        # num_layers: number of decoder layers
+        # d_model: embedding dimension
+        # num_heads: number of attention heads
+        # dff: neurons in feed-forward sublayers
+        dropout_rate = 0.1 # TODO: hp
 
         target_vocab_size = tokenizer.vocab_size + 2
         return trf.Transformer(
-            num_layers, d_model, num_heads, dff,
+            hp.get('num_layers'),
+            hp.get('d_model'),
+            hp.get('num_heads'),
+            hp.get('dff'),
             target_vocab_size,
             pe_target=target_vocab_size,
             rate=dropout_rate
         )
     return build_model
 
-def train(model, training_data, epochs = 10):
+def hp_optim(build_model):
+        tuner = kerastuner.tuners.Hyperband(
+            build_model,
+            objective='val_accuracy',
+            max_trials=150,
+            directory='hyperopt_output',
+            project_name='hungarian_news_hyperband'
+        )
+
+def train(model, training_data, epochs = 10, load = True):
     print(f'training; devices: {tf.config.list_physical_devices()}')
     train_dataset, val_dataset = training_data
 
-    # define loss and accuracy functions
-    loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
-        from_logits=True, reduction='none')
-    def loss_function(real, pred):
-        mask = tf.math.logical_not(tf.math.equal(real, 0))
-        loss_ = loss_object(real, pred)
-        mask = tf.cast(mask, dtype=loss_.dtype)
-        loss_ *= mask
-        return tf.reduce_sum(loss_)/tf.reduce_sum(mask)
-    def accuracy_function(real, pred):
-        accuracies = tf.equal(real, tf.argmax(pred, axis=2))
-        mask = tf.math.logical_not(tf.math.equal(real, 0))
-        accuracies = tf.math.logical_and(mask, accuracies)
-        accuracies = tf.cast(accuracies, dtype=tf.float32)
-        mask = tf.cast(mask, dtype=tf.float32)
-        return tf.reduce_sum(accuracies)/tf.reduce_sum(mask)
+    checkpoint_path = './checkpoints/model_best'
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(
+        checkpoint_path,
+        monitor = 'val_accuracy',
+        save_best_only = True,
+        mode = 'max'
+    )
 
-    # TODO: get from HP
-    num_layers = 6 # number of decoder layers
-    d_model = 512 # embedding dimension
-    num_heads = 8 # number of attention heads
-    dff = 2048 # neurons in feed-forward sublayers
-
-    learning_rate = trf.CustomSchedule(d_model)
-    optimizer = tf.keras.optimizers.Adam(learning_rate, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
-
-    train_loss = tf.keras.metrics.Mean(name='train_loss')
-    train_accuracy = tf.keras.metrics.Mean(name='train_accuracy')
-
-    model_key = f'hungarian_news-{num_layers}-{d_model}-{num_heads}-{dff}-{rel}'
-    checkpoint_path = f'./checkpoints/{model_key}'
-    ckpt = tf.train.Checkpoint(model=model, optimizer=optimizer)
-    ckpt_manager = tf.train.CheckpointManager(ckpt, checkpoint_path, max_to_keep=5)
-
-    # if a checkpoint exists, restore the latest checkpoint.
-    if ckpt_manager.latest_checkpoint:
-        ckpt.restore(ckpt_manager.latest_checkpoint)
-        print('Latest checkpoint restored!!')
-
-    train_step_signature = [
-        tf.TensorSpec(shape=(None, None), dtype=tf.int64),
-    ]
-
-    @tf.function(input_signature=train_step_signature)
-    def train_step(tar):
-        tar_inp = tar[:, :-1]
-        tar_real = tar[:, 1:]
-        inp = tf.zeros(tf.shape(tar_inp), tf.int64)
-
-        enc_padding_mask, combined_mask, dec_padding_mask = create_masks(inp, tar_inp)
-
-        with tf.GradientTape() as tape:
-            predictions, _ = model(inp, tar_inp, True, enc_padding_mask, combined_mask, dec_padding_mask)
-            loss = loss_function(tar_real, predictions)
-
-        gradients = tape.gradient(loss, model.trainable_variables)
-        optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-
-        train_loss(loss)
-        train_accuracy(accuracy_function(tar_real, predictions))
-
-    for epoch in range(epochs):
-        start = time.time()
-
-        train_loss.reset_states()
-        train_accuracy.reset_states()
-
-        for (batch, inp) in enumerate(train_dataset):
-            train_step(inp)
-
-            if batch % 50 == 0:
-                print(
-                    f'Epoch {epoch+1} Batch {batch} ' +
-                    f'Loss {train_loss.result():.4f} ' +
-                    f'Accuracy {train_accuracy.result():.4f}')
-
-        if (epoch + 1) % 5 == 0:
-            ckpt_save_path = ckpt_manager.save()
-            print('Saving checkpoint for epoch {} at {}'.format(epoch+1, ckpt_save_path))
-
-        print(
-            f'Epoch {epoch+1} ' +
-            f'Loss {train_loss.result():.4f} ' +
-            f'Accuracy {train_accuracy.result():.4f}')
-        print(f'Time taken for 1 epoch: {(time.time() - start):.2f} secs\n')
+    model.compile()
+    if load:
+        model.load_weights(checkpoint_path)
+    model.fit(
+        train_dataset,
+        validation_data = val_dataset,
+        epochs = epochs,
+        callbacks = [ checkpoint ]
+    )
     return model
 
 def evaluate(transformer, tokenizer, prompt, max_len, top_k):
@@ -202,7 +145,7 @@ def evaluate(transformer, tokenizer, prompt, max_len, top_k):
     output = tf.expand_dims(decoder_input, 0)
 
     for i in range(max_len):
-        enc_padding_mask, combined_mask, dec_padding_mask = create_masks(encoder_input, output)
+        enc_padding_mask, combined_mask, dec_padding_mask = trf.create_masks(encoder_input, output)
 
         # predictions.shape == (batch_size, seq_len, vocab_size)
         predictions, attention_weights = transformer(encoder_input, output, False, enc_padding_mask, combined_mask, dec_padding_mask)

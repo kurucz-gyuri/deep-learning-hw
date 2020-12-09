@@ -36,6 +36,21 @@ def create_look_ahead_mask(size):
   mask = 1 - tf.linalg.band_part(tf.ones((size, size)), -1, 0)
   return mask  # (seq_len, seq_len)
 
+def create_mask(tar):
+    # Used in the 2nd attention block in the decoder.
+    # This padding mask is used to mask the encoder outputs.
+    dec_padding_mask = create_padding_mask(tar)
+
+    # Used in the 1st attention block in the decoder.
+    # It is used to pad and mask future tokens in the input received by
+    # the decoder.
+    look_ahead_mask = create_look_ahead_mask(tf.shape(tar)[1])
+    dec_target_padding_mask = create_padding_mask(tar)
+    combined_mask = tf.maximum(dec_target_padding_mask, look_ahead_mask)
+
+    return combined_mask, dec_padding_mask
+
+
 def scaled_dot_product_attention(q, k, v, mask):
   """Calculate the attention weights.
   q, k, v must have matching leading dimensions.
@@ -200,25 +215,82 @@ class Decoder(tf.keras.layers.Layer):
     return x, attention_weights
 
 class Transformer(tf.keras.Model):
-  def __init__(self, num_layers, d_model, num_heads, dff,
+    def __init__(self, num_layers, d_model, num_heads, dff,
                target_vocab_size, pe_target, rate=0.1):
-    super(Transformer, self).__init__()
+        super(Transformer, self).__init__()
 
-    self.decoder = Decoder(num_layers, d_model, num_heads, dff,
-                           target_vocab_size, pe_target, rate)
+        self.decoder = Decoder(num_layers, d_model, num_heads, dff,
+                               target_vocab_size, pe_target, rate)
 
-    self.final_layer = tf.keras.layers.Dense(target_vocab_size)
+        self.final_layer = tf.keras.layers.Dense(target_vocab_size)
+        
+        self.d_model = d_model
 
-  def call(self, inp, tar, training, enc_padding_mask,
-           look_ahead_mask, dec_padding_mask):
+    def compile(self):
+        super(Transformer, self).compile()
+        # define loss and accuracy functions
+        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
+            from_logits=True, reduction='none')
+        def loss_function(real, pred):
+            mask = tf.math.logical_not(tf.math.equal(real, 0))
+            loss_ = loss_object(real, pred)
+            mask = tf.cast(mask, dtype=loss_.dtype)
+            loss_ *= mask
+            return tf.reduce_sum(loss_)/tf.reduce_sum(mask)
+        def accuracy_function(real, pred):
+            accuracies = tf.equal(real, tf.argmax(pred, axis=2))
+            mask = tf.math.logical_not(tf.math.equal(real, 0))
+            accuracies = tf.math.logical_and(mask, accuracies)
+            accuracies = tf.cast(accuracies, dtype=tf.float32)
+            mask = tf.cast(mask, dtype=tf.float32)
+            return tf.reduce_sum(accuracies)/tf.reduce_sum(mask)
+        self.loss_function = loss_function
+        self.accuracy_function = accuracy_function
 
-    # dec_output.shape == (batch_size, tar_seq_len, d_model)
-    dec_output, attention_weights = self.decoder(
-        tar, training, look_ahead_mask, dec_padding_mask)
+        learning_rate = CustomSchedule(self.d_model)
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
 
-    final_output = self.final_layer(dec_output)  # (batch_size, tar_seq_len, target_vocab_size)
+        self.train_loss = tf.keras.metrics.Mean(name='train_loss')
+        self.train_accuracy = tf.keras.metrics.Mean(name='train_accuracy')
 
-    return final_output, attention_weights
+    @property
+    def metrics(self):
+        return [ self.train_loss, self.train_accuracy ]
+
+    def call(self, tar, training):
+        look_ahead_mask, dec_padding_mask = create_mask(tar)
+        # dec_output.shape == (batch_size, tar_seq_len, d_model)
+        dec_output, attention_weights = self.decoder(
+            tar, training, look_ahead_mask, dec_padding_mask)
+        final_output = self.final_layer(dec_output)  # (batch_size, tar_seq_len, target_vocab_size)
+        return final_output, attention_weights
+
+    def test_step(self, tar):
+        tar_inp = tar[:, :-1]
+        tar_real = tar[:, 1:]
+
+        predictions, _ = self(tar_inp, training = False)
+        loss = self.loss_function(tar_real, predictions)
+
+        accuracy = self.accuracy_function(tar_real, predictions)
+        self.train_loss(loss)
+        self.train_accuracy(accuracy)
+        return { 'loss': loss, 'accuracy': accuracy }
+    def train_step(self, tar):
+        tar_inp = tar[:, :-1]
+        tar_real = tar[:, 1:]
+
+        with tf.GradientTape() as tape:
+            predictions, _ = self(tar_inp, training = True)
+            loss = self.loss_function(tar_real, predictions)
+
+        gradients = tape.gradient(loss, self.trainable_variables)
+        self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
+
+        accuracy = self.accuracy_function(tar_real, predictions)
+        self.train_loss(loss)
+        self.train_accuracy(accuracy)
+        return { 'loss': loss, 'accuracy': accuracy }
 
 class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
   def __init__(self, d_model, warmup_steps=4000):
