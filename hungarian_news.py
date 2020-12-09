@@ -71,14 +71,14 @@ def build_training_data(raw_training_data, tokenizer_hu):
 def get_range_hp():
     hp = kerastuner.engine.hyperparameters.HyperParameters()
     hp.Int('num_layers', min_value=1, max_value=4),
-    hp.int('d_model', min_value=64, max_value=512, step=64),
-    hp.Int('num_heads', min_value=2, max_value=8),
-    hp.Int('dff', min_value=64, max_value=1024, step=64),
+    hp.Int('d_model_per_heads', min_value=32, max_value=128, step=64),
+    hp.Int('num_heads', min_value=2, max_value=6),
+    hp.Int('dff', min_value=32, max_value=512, step=32),
     return hp
 def get_fixed_hp():
     hp = kerastuner.engine.hyperparameters.HyperParameters()
     hp.Fixed('num_layers', 2),
-    hp.Fixed('d_model', 128),
+    hp.Fixed('d_model_per_heads', 64),
     hp.Fixed('num_heads', 2),
     hp.Fixed('dff', 128),
     return hp
@@ -93,25 +93,36 @@ def get_model_builder(tokenizer):
         dropout_rate = 0.1 # TODO: hp
 
         target_vocab_size = tokenizer.vocab_size + 2
-        return trf.Transformer(
+        model = trf.Transformer(
             hp.get('num_layers'),
-            hp.get('d_model'),
+            hp.get('d_model_per_heads') * hp.get('num_heads'),
             hp.get('num_heads'),
             hp.get('dff'),
             target_vocab_size,
             pe_target=target_vocab_size,
             rate=dropout_rate
         )
+        model.compile()
+        return model
     return build_model
 
-def hp_optim(build_model):
-        tuner = kerastuner.tuners.Hyperband(
-            build_model,
-            objective='val_accuracy',
-            max_trials=150,
-            directory='hyperopt_output',
-            project_name='hungarian_news_hyperband'
-        )
+def hp_optim(build_model, training_data):
+    train_dataset, val_dataset = training_data
+    tuner = kerastuner.tuners.Hyperband(
+        build_model,
+        hyperparameters = get_range_hp(),
+        objective = 'val_accuracy',
+        max_epochs = 10,
+        directory = 'hyperopt_output',
+        project_name = 'hungarian_news_hyperband'
+    )
+    tuner.search(
+        train_dataset,
+        epochs = 10,
+        validation_data = val_dataset,
+        steps_per_epoch = 100,
+        validation_steps = 20,
+    )
 
 def train(model, training_data, epochs = 10, load = True):
     print(f'training; devices: {tf.config.list_physical_devices()}')
@@ -125,7 +136,6 @@ def train(model, training_data, epochs = 10, load = True):
         mode = 'max'
     )
 
-    model.compile()
     if load:
         model.load_weights(checkpoint_path)
     model.fit(
@@ -137,18 +147,12 @@ def train(model, training_data, epochs = 10, load = True):
     return model
 
 def evaluate(transformer, tokenizer, prompt, max_len, top_k):
-    # TODO: remove input
-    inp_sentence = tf.zeros([20], tf.int64)
-    encoder_input = tf.expand_dims(inp_sentence, 0)
-
     decoder_input = [tokenizer.vocab_size] + tokenizer.encode(prompt)
     output = tf.expand_dims(decoder_input, 0)
 
     for i in range(max_len):
-        enc_padding_mask, combined_mask, dec_padding_mask = trf.create_masks(encoder_input, output)
-
         # predictions.shape == (batch_size, seq_len, vocab_size)
-        predictions, attention_weights = transformer(encoder_input, output, False, enc_padding_mask, combined_mask, dec_padding_mask)
+        predictions, attention_weights = transformer(output, training = False)
 
         # select the last word from the seq_len dimension
         predictions = predictions[: ,-1:, :]  # (batch_size, 1, vocab_size)

@@ -1,3 +1,4 @@
 tokenizer_hu.subwords
 __pycache__
 checkpoints
+hyperopt_output
