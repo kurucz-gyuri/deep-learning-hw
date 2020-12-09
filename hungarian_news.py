@@ -12,24 +12,17 @@ import transformer as trf
 import os
 
 # training parameters
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 MAX_LENGTH = 256
 
-# transformer hyperparameters
-num_layers = 6 # number of decoder layers
-d_model = 512 # embedding dimension
-num_heads = 8 # number of attention heads
-dff = 2048 # neurons in feed-forward sublayers
-
 rel = 0
-model_key = f'hungarian_news-{num_layers}-{d_model}-{num_heads}-{dff}-{rel}'
 
 def load_raw_training_data():
     print("Loading raw training data into memory")
     def load_data(filename):
         with open(filename, 'r') as f:
             return tf.data.Dataset.from_tensor_slices(list([i.strip().encode() for i in f]))
-    train_examples, val_examples = load_data('origo_train.txt'), load_data('origo_valid.txt')
+    train_examples, val_examples = load_data('data/origo_train.txt'), load_data('data/origo_valid.txt')
     return (train_examples, val_examples)
 
 def get_tokenizer(raw_training_data):
@@ -65,7 +58,7 @@ def build_training_data(raw_training_data, tokenizer_hu):
     ds_train = raw_train.map(tf_encode)
     ds_train = ds_train.map(cut_max_length)
     ds_train = ds_train.cache()
-    BUFFER_SIZE = 20000
+    BUFFER_SIZE = 5000
     ds_train = ds_train.shuffle(BUFFER_SIZE).padded_batch(BATCH_SIZE)
     ds_train = ds_train.prefetch(tf.data.experimental.AUTOTUNE)
 
@@ -91,62 +84,66 @@ def create_masks(inp, tar):
 
   return enc_padding_mask, combined_mask, dec_padding_mask
 
-def train(training_data, tokenizer_hu, epochs = 10):
+def get_model_builder(tokenizer):
+    def build_model(hp):
+        # transformer hyperparameters
+        num_layers = 4 # number of decoder layers
+        d_model = 256 # embedding dimension
+        num_heads = 4 # number of attention heads
+        dff = 256 # neurons in feed-forward sublayers
+        dropout_rate = 0.1
+
+        target_vocab_size = tokenizer.vocab_size + 2
+        return trf.Transformer(
+            num_layers, d_model, num_heads, dff,
+            target_vocab_size,
+            pe_target=target_vocab_size,
+            rate=dropout_rate
+        )
+    return build_model
+
+def train(model, training_data, epochs = 10):
     print(f'training; devices: {tf.config.list_physical_devices()}')
     train_dataset, val_dataset = training_data
 
-    target_vocab_size = tokenizer_hu.vocab_size + 2
-    dropout_rate = 0.1
-    print(f'vocab_size: {tokenizer_hu.vocab_size}')
-
-    learning_rate = trf.CustomSchedule(d_model)
-    optimizer = tf.keras.optimizers.Adam(learning_rate, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
-
+    # define loss and accuracy functions
     loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
         from_logits=True, reduction='none')
-
     def loss_function(real, pred):
         mask = tf.math.logical_not(tf.math.equal(real, 0))
         loss_ = loss_object(real, pred)
-
         mask = tf.cast(mask, dtype=loss_.dtype)
         loss_ *= mask
-
         return tf.reduce_sum(loss_)/tf.reduce_sum(mask)
-
-
     def accuracy_function(real, pred):
         accuracies = tf.equal(real, tf.argmax(pred, axis=2))
-
         mask = tf.math.logical_not(tf.math.equal(real, 0))
         accuracies = tf.math.logical_and(mask, accuracies)
-
         accuracies = tf.cast(accuracies, dtype=tf.float32)
         mask = tf.cast(mask, dtype=tf.float32)
         return tf.reduce_sum(accuracies)/tf.reduce_sum(mask)
 
+    # TODO: get from HP
+    num_layers = 6 # number of decoder layers
+    d_model = 512 # embedding dimension
+    num_heads = 8 # number of attention heads
+    dff = 2048 # neurons in feed-forward sublayers
+
+    learning_rate = trf.CustomSchedule(d_model)
+    optimizer = tf.keras.optimizers.Adam(learning_rate, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
+
     train_loss = tf.keras.metrics.Mean(name='train_loss')
     train_accuracy = tf.keras.metrics.Mean(name='train_accuracy')
 
-    transformer = trf.Transformer(num_layers, d_model, num_heads, dff,
-                              target_vocab_size,
-                              pe_target=target_vocab_size,
-                              rate=dropout_rate)
-
+    model_key = f'hungarian_news-{num_layers}-{d_model}-{num_heads}-{dff}-{rel}'
     checkpoint_path = f'./checkpoints/{model_key}'
-    ckpt = tf.train.Checkpoint(transformer=transformer, optimizer=optimizer)
+    ckpt = tf.train.Checkpoint(model=model, optimizer=optimizer)
     ckpt_manager = tf.train.CheckpointManager(ckpt, checkpoint_path, max_to_keep=5)
 
     # if a checkpoint exists, restore the latest checkpoint.
     if ckpt_manager.latest_checkpoint:
         ckpt.restore(ckpt_manager.latest_checkpoint)
         print('Latest checkpoint restored!!')
-
-    # The @tf.function trace-compiles train_step into a TF graph for faster
-    # execution. The function specializes to the precise shape of the argument
-    # tensors. To avoid re-tracing due to the variable sequence lengths or variable
-    # batch sizes (the last batch is smaller), use input_signature to specify
-    # more generic shapes.
 
     train_step_signature = [
         tf.TensorSpec(shape=(None, None), dtype=tf.int64),
@@ -161,11 +158,11 @@ def train(training_data, tokenizer_hu, epochs = 10):
         enc_padding_mask, combined_mask, dec_padding_mask = create_masks(inp, tar_inp)
 
         with tf.GradientTape() as tape:
-            predictions, _ = transformer(inp, tar_inp, True, enc_padding_mask, combined_mask, dec_padding_mask)
+            predictions, _ = model(inp, tar_inp, True, enc_padding_mask, combined_mask, dec_padding_mask)
             loss = loss_function(tar_real, predictions)
 
-        gradients = tape.gradient(loss, transformer.trainable_variables)
-        optimizer.apply_gradients(zip(gradients, transformer.trainable_variables))
+        gradients = tape.gradient(loss, model.trainable_variables)
+        optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
         train_loss(loss)
         train_accuracy(accuracy_function(tar_real, predictions))
@@ -194,14 +191,14 @@ def train(training_data, tokenizer_hu, epochs = 10):
             f'Loss {train_loss.result():.4f} ' +
             f'Accuracy {train_accuracy.result():.4f}')
         print(f'Time taken for 1 epoch: {(time.time() - start):.2f} secs\n')
-    return transformer
+    return model
 
-def evaluate(transformer, tokenizer_hu, prompt, max_len, top_k):
+def evaluate(transformer, tokenizer, prompt, max_len, top_k):
     # TODO: remove input
     inp_sentence = tf.zeros([20], tf.int64)
     encoder_input = tf.expand_dims(inp_sentence, 0)
 
-    decoder_input = [tokenizer_hu.vocab_size] + tokenizer_hu.encode(prompt)
+    decoder_input = [tokenizer.vocab_size] + tokenizer.encode(prompt)
     output = tf.expand_dims(decoder_input, 0)
 
     for i in range(max_len):
@@ -222,7 +219,7 @@ def evaluate(transformer, tokenizer_hu, prompt, max_len, top_k):
         # predicted_id = tf.cast(tf.argmax(predictions, axis=-1), tf.int32)
 
         # return the result if the predicted_id is equal to the end token
-        if predicted_id == tokenizer_hu.vocab_size+1:
+        if predicted_id == tokenizer.vocab_size+1:
           return tf.squeeze(output, axis=0), attention_weights
 
         # concatentate the predicted_id to the output which is given to the decoder
@@ -231,10 +228,10 @@ def evaluate(transformer, tokenizer_hu, prompt, max_len, top_k):
 
     return tf.squeeze(output, axis=0), attention_weights
 
-def generate(transformer, tokenizer_hu, prompt, max_len = 32, top_k = 3):
-    result, attention_weights = evaluate(transformer, tokenizer_hu, prompt, max_len, top_k)
+def generate(transformer, tokenizer, prompt, max_len = 32, top_k = 3):
+    result, attention_weights = evaluate(transformer, tokenizer, prompt, max_len, top_k)
 
     # print(f'Tokens: {result}')
-    predicted_sentence = tokenizer_hu.decode([i for i in result if i < tokenizer_hu.vocab_size])
+    predicted_sentence = tokenizer.decode([i for i in result if i < tokenizer.vocab_size])
     print(f'Prompt: {prompt}')
     print(f'Generated: {predicted_sentence}')
