@@ -1,0 +1,100 @@
+\documentclass[journal]{IEEEtai}
+
+\usepackage[colorlinks,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
+
+\usepackage{color,array}
+
+\usepackage{graphicx}
+
+%% \jvol{XX}
+%% \jnum{XX}
+%% \paper{1234567}
+%% \pubyear{2020}
+%% \publisheddate{xxxx 00, 0000}
+%% \currentdate{xxxx 00, 0000}
+%% \doiinfo{TQE.2020.Doi Number}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\setcounter{page}{1}
+%% \setcounter{secnumdepth}{0}
+
+
+\begin{document}
+
+
+\title{ Cracking the uncrackable: Generating Hungarian text using transformers } 
+
+
+\author{György J. Author, György K. Author, and Márió Z. Author
+\thanks{This work was made as a final assignment for the subject ``Deep Learning in Practice with Python and LUA'' (course ID: VITMAV45) supervised by Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. }
+\thanks{Gy. J. Author is a student of Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. (e-mail: jozsagyorgy@edu.bme.hu).}
+\thanks{Gy. K. Author is a student of Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. (e-mail: kurucz.gyorgy@edu.bme.hu).}
+\thanks{M. Z. Author is a student of Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. (e-mail: zellermario@edu.bme.hu).}}
+
+\markboth{Deep Learning in Practice with Python and LUA final assignment, Vol. 01, No. 1, December 2020}
+{First A. Author \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtai.cls for IEEE Journals of IEEE Transactions on Artificial Intelligence}
+
+\maketitle
+
+\begin{abstract}
+The abstract should not exceed 250 words. This example is 250 words. See instructions give you guidelines for preparing papers for IEEE Transactions and Journals. Use this document as a template if you are using Microsoft {\bi Word} 6.0 or later. Otherwise, use this document as an instruction set. The electronic file of your paper will be formatted further at IEEE. Paper titles should be written in uppercase and lowercase letters, not all uppercase. Avoid writing long formulas with subscripts in the title; short formulas that identify the elements are fine (e.g., ``Nd--Fe--B''). Do not write ``(Invited)'' in the title. Full names of authors are preferred in the author field, but are not required. Put a space between authors' initials. The abstract must be a concise yet comprehensive reflection of what is in your article. In particular, the abstract must be self-contained, without abbreviations, footnotes, or references. It should be a microcosm of the full article. The abstract must be between 150--250 words. Be sure that you adhere to these limits; otherwise, you will need to edit your abstract accordingly. The abstract must be written as one paragraph, and should not contain displayed mathematical equations or tabular material. The abstract should include three or four different keywords or phrases, as this will help readers to find it. It is important to avoid over-repetition of such phrases as this can result in a page being rejected by search engines. Ensure that your abstract reads well and is grammatically correct.
+\end{abstract}
+
+\begin{IEEEImpStatement}
+Chatbots are a popular technology in online interaction. They reduce the load on human support teams and offer continuous 24-7 support to customers. Likewise, the recent popularity of GPT-3 and BERT language models shows the need for high-functioning Natural Language Processing solutions. However, most of these efforts are centered around the English language. The language model we introduce in this paper offer an alternative to these English models, as it is working with the much more complex Hungarian language, by generating news articles, based on popular Hungarian news outlets.
+\end{IEEEImpStatement}
+
+\begin{IEEEkeywords}
+Enter key words or phrases in alphabetical order, separated by commas. For a list of suggested keywords, send a blank e-mail to \href{mailto:keywords@ieee.org}{\underline{keywords@ieee.org}} or visit \href{http://www.ieee.org/organizations/pubs/ani_prod/keywrd98.txt}{\underline{http://www.ieee.org/organizations/pubs/ani\_prod/keywrd98.txt}}
+\end{IEEEkeywords}
+
+
+
+\section{Introduction}
+
+\IEEEPARstart{T}{he} demand for good computer language agents is ever growing. Natural Language Processing (NLP) offers a solution to this with deep neural networks designed to learn the syntactic and semantic structure of natural language. Recent development of the transformer architecture\cite{vaswani2017attention} has helped models reach a level of sophistication previously unseen in Recurrent Neural Network (RNN) based text generators. Solutions such as GPT-3\cite{brown2020language} (Generative Pre-trained Transformer 3) and BERT\cite{devlin2019bert} (Bidirectional Encoder Representations from Transformers) offer high quality generated text capable of passing the so-called Turing-test\cite{TuringMind}.
+
+However, most implementations focus on English language processing, whereas text generators in other languages are sparse and lack the high level of sophistication in language understanding and syntactic correctness. 
+
+Furthermore, non-English languages pose additional challenges as linguistic properties differ from language to language. Particularly, agglutinative languages challenge these models, as words have a range of different suffixes, making it more difficult for a language learning model to learn a semantic understanding of input text.
+
+\section{Objective}
+Our goal in this assignment was to create an NLP model capable of generating texts mimicking  the styles' of popular Hungarian news articles from outlets such as {\it index.hu} and {\it origo.hu}. Upon supplying the model a sentence or a beginning of a sentence as a prompt, we expect it to generate an output of a whole news article
+
+\section{Challenges}
+Previous works have been focusing parts and aspects of the Hungarian language, such as identification of zero copulas\cite{Dmtr2020MuchAA}, however, few have attempted to generate lifelike Hungarian text. The language itself has a reputation of being particularly difficult to learn for foreigners. This is because its agglutinative nature and difficult syntactic rules. Hungarian has been called the most creative language in the world, as you can play with the order and the cases, and moreover, with the suffixes and prefixes, too. These complex syntactic rules make Hungarian a very difficult language to master even for humans, and certainly for neural networks such as our model.
+
+Furthermore, language processing models, such as BERT and GPT-2 require an immense amount of time and computer resources to learn the complex relations of language. Even GPT-2, the predecessor of GPT-3 struggled to generate lifelike texts, and understand human input, even though it was created with millions of dollars worth of technology and dozens of state-of-the-art experts in the field. We can not afford millions of dollars' worth of computer resources, having to use free alternatives, such ag Google collab.
+
+\section{Previous works}
+
+
+
+\section{Methodology}
+For implementing the text generating agent, we needed to solve multiple problems. The first challenge presented itself as databases of cleaned Hungarian texts don't exist. We needed to scrape it for ourselves. After collecting the data, we needed to design a model to generate the output text, given an initial prompt. Finally, we needed to train the network with the collected data, so that the model can learn the Hungarian language.  
+
+\subsection{Collecting the data}
+Our initial plan was to use the database on \href{https://mek.oszk.hu/}{https://mek.oszk.hu/}, containing tens of thousands of Hungarian documents. However, the lack of easily usable API or centralized index-registry would have made it difficult to collect enough data for the training phase, leading to us ultimately deciding against this source.
+
+Our attention turned to popular Hungarian news sites, particularly \href{https://index.hu/}{https://index.hu/} and \href{https://www.origo.hu}{https://www.origo.hu}. These particular sites were ideal as they provided regular HTML paths and centralized pages containing all previous articles. 
+
+We first scraped all the links of articles written in the past 4 years from both outlets. Then, we proceeded to download the HTML body of all links gathered. This would have resulted in more than 300,000 origo articles and a similar amount of index articles. However, due to time constraints, we stopped the process prematurely, only gathering articles in the tens of thousands.
+
+We separated the origo and index articles from each other, as they have vastly different styles. This separation meant that we could train our model later on to generate articles of different styles. 
+
+The data sets were then shuffled, as to mix them in time. This prevented a bias in training where the training, validation and test data sets would result in being disjunctive in time. This resulted in data being representative of the general style of the outlet, and not the time period. 
+
+\subsection{designing the model}
+
+
+\subsection{Training}
+
+
+
+
+
+\bibliography{cite}
+\bibliographystyle{alpha}
+
+\end{document}
