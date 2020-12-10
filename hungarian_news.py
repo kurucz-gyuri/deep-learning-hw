@@ -76,11 +76,12 @@ def get_range_hp():
     hp.Int('dff', min_value=32, max_value=512, step=32),
     return hp
 def get_fixed_hp():
+    # Values obtained by hyperparameter optimization
     hp = kerastuner.engine.hyperparameters.HyperParameters()
     hp.Fixed('num_layers', 2),
-    hp.Fixed('d_model_per_heads', 64),
-    hp.Fixed('num_heads', 2),
-    hp.Fixed('dff', 128),
+    hp.Fixed('d_model_per_heads', 128),
+    hp.Fixed('num_heads', 6),
+    hp.Fixed('dff', 256),
     return hp
 
 def get_model_builder(tokenizer):
