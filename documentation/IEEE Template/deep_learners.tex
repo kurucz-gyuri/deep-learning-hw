@@ -70,6 +70,14 @@ Furthermore, language processing models, such as BERT and GPT-2 require an immen
 \section{Previous works}
 \textbf{DESCRIPTION OF THE STATE OF NLP IN ACADEMIA: RNN, LSTM, TRANSFORMER, POSSIBLY A FEW PLUS CITATIONS OF USES OF SUCH MODELS. ALSO A PARAGRAPH OR TWO ABOUT BERT AND GPT-2 EACH}
 
+\subsection{RNNs}
+
+\subsection{Transformers}
+
+\subsection{GPT-3}
+
+\subsection{BERT}
+
 
 \section{Methodology}
 For implementing the text generating agent, we needed to solve multiple problems. The first challenge presented itself as databases of cleaned Hungarian texts don't exist. We needed to scrape it for ourselves. After collecting the data, we needed to design a model to generate the output text, given an initial prompt. Finally, we needed to train the network with the collected data, so that the model can learn the Hungarian language.  
@@ -103,7 +111,9 @@ We eventually decided to use a transformer-based network.\textbf{THIS IS WHERE A
 \textbf{RESULTS: DIAGRAMS, IMAGES, TEXT RESULTS TO SHOW LEARNING}
 
 \section{Future possibilities}
-\textbf{DESCRIPTION ON POSSIBLE FUTURE IMPROVEMENT: MORE GPU+RAM, RESOURCES, BIGGER NETWORK}
+It was clear from the training process that the greatest bottleneck of the project were the limited resources. In terms of complexity and number of layers, our model was tiny compared to state-of-the-art solutions, such as GPT-3. Such models are trained with millions of dollars worth of data and computing power. Given sufficient computing resources, the output text can be improved in quality.
+
+Another potential optimization strategy is the improvement of the model's parallelization capabilities. This, however is a highly complicated field, and implementing proper parallelization is prone to have errors without a sufficient suite of tests. For this reason, waiting for mainstream machine learning frameworks' implementation (such as TensorFlow\cite{tf}) is the safer alternative to parallelize.
 
 
 \bibliography{cite}
