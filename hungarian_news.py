@@ -12,6 +12,7 @@ import transformer as trf
 import kerastuner
 
 import os
+import json
 
 # training parameters
 BATCH_SIZE = 16
@@ -128,7 +129,14 @@ def hp_optim(tuner, training_data):
         validation_steps = 20,
     )
 
-def train(model, training_data, epochs = 10, load = True):
+class EpochCallback(tf.keras.callbacks.Callback):
+    def __init__(self, fn):
+        self.fn = fn
+    def on_epoch_begin(self, epoch, logs=None):
+        self.fn(epoch, logs)
+
+
+def train(model, tokenizer, training_data, epochs = 10, load = True, steps_per_epoch = None):
     print(f'training; devices: {tf.config.list_physical_devices()}')
     train_dataset, val_dataset = training_data
 
@@ -140,15 +148,29 @@ def train(model, training_data, epochs = 10, load = True):
         mode = 'max'
     )
 
+    def on_epoch(epoch, logs):
+        prompt = ""
+        max_len = 32
+        top_k = 3
+        result, attention_weights = evaluate(model, tokenizer, prompt, max_len, top_k)
+        predicted_sentence = tokenizer.decode([i for i in result if i < tokenizer.vocab_size])
+        print(f'epoch {epoch} test predict: {predicted_sentence}')
+        with open('test_predict.txt', 'a') as f:
+            f.write(f'epoch {epoch}: {predicted_sentence}\n')
+
     if load:
         model.load_weights(checkpoint_path)
-    model.fit(
+    history = model.fit(
         train_dataset,
         validation_data = val_dataset,
         epochs = epochs,
-        callbacks = [ checkpoint ]
+        steps_per_epoch = steps_per_epoch,
+        validation_steps = 50,
+        callbacks = [ checkpoint, EpochCallback(on_epoch) ]
     )
-    return model
+    with open('trainHistory.json', 'w') as f:
+        f.write(json.dumps(history.history))
+    return history
 
 def evaluate(transformer, tokenizer, prompt, max_len, top_k):
     decoder_input = [tokenizer.vocab_size] + tokenizer.encode(prompt)
