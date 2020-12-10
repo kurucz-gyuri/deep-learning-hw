@@ -63,12 +63,12 @@ Furthermore, non-English languages pose additional challenges as linguistic prop
 Our goal in this assignment was to create an NLP model capable of generating texts mimicking  the styles' of popular Hungarian news articles from outlets such as {\it index.hu} and {\it origo.hu}. Upon supplying the model a sentence or a beginning of a sentence as a prompt, we expect it to generate an output of a whole news article
 
 \section{Challenges}
-Previous works have been focusing parts and aspects of the Hungarian language, such as identification of zero copulas\cite{Dmtr2020MuchAA}, however, few have attempted to generate lifelike Hungarian text. The language itself has a reputation of being particularly difficult to learn for foreigners. This is because its agglutinative nature and difficult syntactic rules. Hungarian has been called the most creative language in the world, as you can play with the order and the cases, and moreover, with the suffixes and prefixes, too. These complex syntactic rules make Hungarian a very difficult language to master even for humans, and certainly for neural networks such as our model.
+Previous works have been focusing parts and aspects of the Hungarian language, such as identification of zero copulas\cite{Dmtr2020MuchAA}, and understanding legal texts in Hungarian\cite{gorog2019legal}, however, few have attempted to generate lifelike Hungarian text. The language itself has a reputation of being particularly difficult to learn for foreigners. This is because its agglutinative nature and difficult syntactic rules. Hungarian has been called the most creative language in the world, as you can play with the order and the cases, and moreover, with the suffixes and prefixes, too. These complex syntactic rules make Hungarian a very difficult language to master even for humans, and certainly for neural networks such as our model.
 
-Furthermore, language processing models, such as BERT and GPT-2 require an immense amount of time and computer resources to learn the complex relations of language. Even GPT-2, the predecessor of GPT-3 struggled to generate lifelike texts, and understand human input, even though it was created with millions of dollars worth of technology and dozens of state-of-the-art experts in the field. We can not afford millions of dollars' worth of computer resources, having to use free alternatives, such ag Google collab.
+Furthermore, language processing models, such as BERT and GPT-2 require an immense amount of time and computer resources to learn the complex relations of language. Even GPT-2, the predecessor of GPT-3 struggled to generate lifelike texts, and understand human input, even though it was created with millions of dollars worth of technology and dozens of state-of-the-art experts in the field. We can not afford millions of dollars' worth of computer resources, having to use free alternatives, such as Google collab.
 
 \section{Previous works}
-
+\textbf{DESCRIPTION OF THE STATE OF NLP IN ACADEMIA: RNN, LSTM, TRANSFORMER, POSSIBLY A FEW PLUS CITATIONS OF USES OF SUCH MODELS. ALSO A PARAGRAPH OR TWO ABOUT BERT AND GPT-2 EACH}
 
 
 \section{Methodology}
@@ -83,15 +83,27 @@ We first scraped all the links of articles written in the past 4 years from both
 
 We separated the origo and index articles from each other, as they have vastly different styles. This separation meant that we could train our model later on to generate articles of different styles. 
 
+The data was reformatted, so that one article was exactly one line in the text file. This was to easily separate articles from each other.
+
 The data sets were then shuffled, as to mix them in time. This prevented a bias in training where the training, validation and test data sets would result in being disjunctive in time. This resulted in data being representative of the general style of the outlet, and not the time period. 
 
 \subsection{designing the model}
+The design of the model was an important decision. Since Hungarian text generating pre-trained frameworks do not exist, we were forced to build the model from the ground up. We have considered two architectures for the project. 
 
+The first option was a Recurrent Neural Network (RNN) with Long-Term Short Memory\cite{lstm} (LSTM) cells. These networks are capable of generating text tokens based on the previously generated tokens, which contribute to the model's ability to make semantic connections in long-term syntactic structures.
+
+The second option was a Transformer\cite{vaswani2017attention} architecture. Transformers have recently been conceptualized, and have subsequently changed the landscape of Natural Language Processing. With the utilization of self-attention layers, transformer models are capable of establishing long-term connections between text tokens, even to the point of generating new tokens based on the entire previous generated output. The attention layers are built for parallel processing of data, speeding up the training process by utilizing GPU cores. The major downside of this approach is because of the architecture's novelty, no standard implementation exists, forcing us to implement the whole architecture ourselves. This results in the implementation being sub-optimal.
+
+We eventually decided to use a transformer-based network.\textbf{THIS IS WHERE A DESCRIPTION OF THE ARCHITECTURE COMES} 
 
 \subsection{Training}
+\textbf{DESCRIPTION OF THE TRAINING PROCESS}
 
+\section{Results}
+\textbf{RESULTS: DIAGRAMS, IMAGES, TEXT RESULTS TO SHOW LEARNING}
 
-
+\section{Future possibilities}
+\textbf{DESCRIPTION ON POSSIBLE FUTURE IMPROVEMENT: MORE GPU+RAM, RESOURCES, BIGGER NETWORK}
 
 
 \bibliography{cite}
