@@ -14,7 +14,7 @@ import kerastuner
 import os
 
 # training parameters
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 MAX_LENGTH = 256
 
 rel = 0
@@ -107,8 +107,7 @@ def get_model_builder(tokenizer):
         return model
     return build_model
 
-def hp_optim(build_model, training_data):
-    train_dataset, val_dataset = training_data
+def get_tuner(build_model):
     tuner = kerastuner.tuners.Hyperband(
         build_model,
         hyperparameters = get_range_hp(),
@@ -117,6 +116,10 @@ def hp_optim(build_model, training_data):
         directory = 'hyperopt_output',
         project_name = 'hungarian_news_hyperband'
     )
+    return tuner
+
+def hp_optim(tuner, training_data):
+    train_dataset, val_dataset = training_data
     tuner.search(
         train_dataset,
         epochs = 10,
