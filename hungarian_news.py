@@ -212,3 +212,11 @@ def generate(transformer, tokenizer, prompt, max_len = 32, top_k = 3):
     predicted_sentence = tokenizer.decode([i for i in result if i < tokenizer.vocab_size])
     print(f'Prompt: {prompt}')
     print(f'Generated: {predicted_sentence}')
+
+def generate_test_prompts(model, tokenizer, max_len = 32, top_k = 3):
+    with open('data/test_prompts.txt', 'r') as f:
+        for line in f:
+            if line[0] == '#': continue
+            line = line.strip()
+            if len(line) == 0: continue
+            generate(model, tokenizer, line + ' ', max_len = max_len, top_k = top_k)

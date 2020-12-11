@@ -1,8 +1,13 @@
 \documentclass[journal]{IEEEtai}
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
 \usepackage[colorlinks,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
 
 \usepackage{color,array}
+
+\usepackage{graphicx}
 
 \usepackage{graphicx}
 
@@ -104,11 +109,186 @@ The second option was a Transformer\cite{vaswani2017attention} architecture. Tra
 
 We eventually decided to use a transformer-based network.\textbf{THIS IS WHERE A DESCRIPTION OF THE ARCHITECTURE COMES} 
 
+\subsection{Hyperparameter optimization}
+\begin{figure*}
+	\centering
+  \includegraphics[width=0.45\linewidth]{fig/hp_dff.png}
+  \includegraphics[width=0.45\linewidth]{fig/hp_num_layers.png}
+  \includegraphics[width=0.5\linewidth]{fig/hp_num_heads_d_model.png}
+  \caption{Accuracy as a function of the different hyperparameters.}
+  \label{fig:hp}
+\end{figure*}
+
 \subsection{Training}
 \textbf{DESCRIPTION OF THE TRAINING PROCESS}
 
+\begin{figure*}
+\centering
+\includegraphics[width=0.45\linewidth]{fig/training_accuracy_30_epoch.png}
+\includegraphics[width=0.45\linewidth]{fig/training_loss_30_epoch.png}
+\caption{Accuracy and loss for the Origo model.}
+\label{fig:training_origo}
+\end{figure*}
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.45\linewidth]{fig/training_accuracy_index.png}
+\includegraphics[width=0.45\linewidth]{fig/training_loss_index.png}
+\caption{Accuracy and loss for the Index model.}
+\label{fig:training_index}
+\end{figure*}
+
+\def\myrow#1#2{#1 & {\tt #2} \\}
+\begin{table*}
+\centering
+\begin{tabular}{lp{12cm}}
+\myrow{epoch 0}{sággalink Menőköették ütemredManink káPénink őköidejékáink átalakíttesztelésbűncselekmény őköőköidejérediszlőköütemrnyőZoltán őköőköőköZoltán}
+\myrow{epoch 1}{A férfi a magyar év év és az első magyar labdarúgó. Egy magyar férfi a férfi az egyik férfi és egy férfi az egyik férfi a magyar válogatott és egy férfi}
+\myrow{epoch 2}{A magyar női labdarúgó. A címvédő válogatott csatára hazai válogatott szövetségi kapitánya. A magyar csapatnak az Európa, a magyar válogatott szövetségi kapitányságra, a magyar}
+\myrow{epoch 4}{Több százmillió forintot ért a Nemzeti Adó- és Vámos Alapítvány, az M0-as autóút forgalmú kilométerszetvédelem közelében}
+\myrow{epoch 8}{Az elmúlt időszakban az Európai Uniónak a kilép az euróövezet kilépő kilépnek feltétellel. A tagországok. A kilé}
+\myrow{epoch 16}{Az elmúlt tíz évben fokozatos egyre több biztonsági intézkedést jelentenek a veszélyhelyzetben, és a veszélyhelyzet megszűnteti, hogy a veszélyhelyzet idején további segítség}
+\myrow{epoch 29}{A spanyol labdarúgóliga csoportkörében, az Atléticoa Barcelona edzője, a címvédő Real Madridban címvédő Real Solarisnak az argentin, Neymarnak a}
+\end{tabular}
+\caption{Text generated for an empty prompt during the training of the Origo model.}
+\label{fig:training_index}
+\end{table*}
+
 \section{Results}
 \textbf{RESULTS: DIAGRAMS, IMAGES, TEXT RESULTS TO SHOW LEARNING}
+
+\subsection{Test prompts}
+For a list of interesting prompts, we sampled names and political parties from the following articles:
+\url{https://magyarnemzet.hu/archivum/belfold-archivum/iranytu-intezet-ader-janos-helyet-varga-mihaly-foglalta-el-3885618/} \\
+\url{https://index.hu/belfold/2017/02/27/botka_nepszerubb_orban_viktornal/} \\
+\url{https://444.hu/2020/01/25/zavecz-csokken-a-fidesz-tabora-de-ettol-nem-lett-erosebb-az-ellenzek} \\
+
+\def\myrowb#1#2{#1 & {\tt #2} \\}
+\begin{table*}
+\centering
+\begin{tabular}{lp{14cm}}
+\myrowb{Áder János}
+{Áder János köztársaság és az Országgyűlésben  a közterület köztéri vendéglátósai és vendéglátósai , valamint a vendég közt}
+\myrowb{Varga Mihály}
+{Varga Mihály az első olyan magyar futballválogatott volt, ami nem a legjobb magyar válogatott futballistája. A magyar válogatott a világbajnokságon ezüstérmes volt az Európa-bajnokságo}
+\myrowb{Tarlós István}
+{Tarlós István főpolgármesterrel a főpolgármesterrel és az ellenzéki jelölttel is találkozik Karácsony Gergely főpolgármester-jelöltje, Karácsony szerint Karácsony Gergely és Tarlós István főpolgármester-jelölt, Karácsony }
+\myrowb{Orbán Viktor}
+{Orbán Viktor miniszterelnök a Facebook oldalára  posztolja, hogy az elmúlt két hónaphoz képest nem látszik, hogy a Fidesz miért indított kampányt, illetve az általa }
+\myrowb{Navracsics Tibor}
+{Navracsics Tibor egy éve került az Európai Unió luxembourgi programjába (EPP). A szervezet szerint egy luxembourgi székhely is szerepet vállalt az Európai }
+\myrowb{Karácsony Gergely}
+{Karácsony Gergely főpolgármester és a fővárosi Fidesz fővárosi frakcióülése összehozta azokat az ígéreteket, amelyeket az LMP szerint a következő hetekben kellene kilépnie a kormányt }
+\myrowb{Hadházy Ákos}
+{Hadházy Ákos független parlamenti képviselő, a képviselő a parlamentnek is elfogadta a parlamentet. A politikus szerint a képviselők nem szavaznak az LMP javaslatára: a parlamenti }
+\myrowb{Lázár János}
+{Lázár János a Fidesz parlamenti frakcióját alakította, és az új ciklusban a Fidesz is új frakcióját vezeti be a parlamentben - közölte az MTI a FideszKD}
+\myrowb{Kósa Lajos}
+{Kósa Lajos a Fidesz önkormányzati kampányfőnöke szerint Orbán Viktornál a Fidesz és az Európai Néppárt (EP), a Néppárt (EPP). A Fideszt és Orbán }
+\myrowb{Kövér László}
+{Kövér László az MSZP, az MSZP-DK, LMP-DK, az LMP vagy az MSZP-Párbeszéd főpolgármester, de nem beszélhet a magyar politikával }
+\myrowb{Vona Gábort}
+{Vona Gábort nevezte a Jobbik frakcióvezető, Szabó Tímea, a párt alelnöke az ASM, a Párisi SMDI pártelnökök }
+\myrowb{Rogán Antal}
+{Rogán Antal bizalmi indexes interjút adott a Magyar Időknek, amelyben többek közt a Magyar Hírlap újságírói interjúját is készítette az interjú }
+\myrowb{Németh Szilárd}
+{Németh Szilárd fideszes országgyűlési képviselője, a politikus a Facebookon azt írta, hogy az országgyűlésnek nincs választásuk. "A választás a tétlenségtől }
+\myrowb{Botka László}
+{Botka László a Magyar Orvos- és Érmizstő Akadémia (HVG) tulajdonában volt, a HVG szerint a HVG }
+\myrowb{Toroczkai László}
+{Toroczkai László a Mi Útinformhoz fordul. A Mi Hazánk Modunaújvárosi polgármester-választás eredményét ismerteti? A Mi Hahotelr}
+\myrowb{Gyurcsány Ferenc}
+{Gyurcsány Ferenc a Demokraták jelöltjeként indult a választáson. Gyárfás - aki a DK színeiben, az MSZPPáré, a Jobbik - }
+\myrowb{Soros György}
+{Soros György és felesége, a Fidesz a Fiumei-törvény módosítása ellen tiltakozik. A Fideli időkben a Fidelitas (Fidelita}
+\myrowb{Mészáros Lőrinc}
+{Mészáros Lőrinc feleségével közösen nevelt lánya és gyermekeit is nevelte, ezért a gyermek édesapja az RTL Klára című műsorában azt mondta}
+\myrowb{A Fidesz}
+{A Fidesz alelnöke bejelentette, hogy a kormány a következő hetekben nem támogatják az ellenzéki pártok képviselőit. A párt szerint a párt a 2022-es országgal már megválasz}
+\myrowb{A DK}
+{A DK a múlt héten jelentette ki. A párt az európai szövetségeseknek azt tanácsolja, hogy "az európai parlamentire, a pártokra és a civil szervezetekre }
+\myrowb{A Momentum}
+{A Momentum és az LMP közös jelöltet ajánl fel arra: az EP, a párt és a párt is közösen, közös kampányt indított. A Momentum }
+\myrowb{A Jobbik}
+{A Jobbik országgal  a párt frakcióvezetőjének és parlamenti frakcióvezetőivel együtt, a Fidesz pedig nem áll meg, ezért az MSZP sem támogatják az LMP-t}
+\myrowb{A MSZP}
+{A MSZP a Facebookon azt írta: a Jobbik nem fogja elhagynia a párt alelnökének, Bencsics Gábornak, az MSZP elnök-jelöltje az EP}
+\myrowb{Az LMP}
+{Az LMP társelnököt választotta. A párt jelöltjeként (a párt jelöltjeként) választották, az MSZP a legjobb párt között választja. A párt az }
+\myrowb{A Mi Hazánk}
+{A Mi Hazánk Mozgalma szerint az LMP-ből kilakott a párt nem kizár, hogy a pártnak is el kellene tiltani azt a pártot  írja }
+\myrowb{A Kétfarkú Kutyapárt}
+{A Kétfarkú Kutyapárt a Facebookon tett bejelentést az a férfi. A Police.hu-n közölt fotókat az egyik budapesti irodában dolgozó férfi és a nő budapesti }
+\myrowb{A Párbeszéd}
+{A Párbeszéd Magyarországra látogat a Jobbik budapesti elnöki rezsimje, Karácsony Gergely főpolgármester. A politikus a Facebook-oldalán szerint az elmúlt két évben már csak }
+\end{tabular}
+\caption{Text generated for various prompts by the Index model.}
+\label{fig:prompt_index}
+\end{table*}
+
+\begin{table*}
+\centering
+\begin{tabular}{lp{14cm}}
+\myrowb{Áder János}
+{Áder János közte egy magyar bajnok, a magyar bajnok magyar focicsapata is megsérült, de az egész világon, a válogatott pedig az egyik legidősebezhető módon szeret}
+\myrowb{Varga Mihály}
+{Varga Mihály nemzetgazdasági tárca jóvá váltja be a kormány a Nemzetgazdasági Szerhij LabdaLiga alapszakaszának első körébe került a magyar kormány és az N}
+\myrowb{Tarlós István}
+{Tarlós István javaslat alapján a kormány engedi a kormány az új koronavírus-járvány terjedésének megakasztását és a kormánynak az új intézkedések bevezetésének tervét a }
+\myrowb{Orbán Viktor}
+{Orbán Viktor kormányfő a miniszterelnök ismét élő magyar ügyekben látogatott. Az Egyesült Államokkal kapcsolatban kapcsolatait és az Egyesült Királyok között, de nem tartják meg Magyarországról }
+\myrowb{Navracsics Tibor}
+{Navracsics Tibor közismert, a Honvéd elleni pénteki derekán tartják, hogy újra a kispadok lesznek - hangsúlyozta az ukrán Nemzetbiztonsági Ügyek Tanszé}
+\myrowb{Karácsony Gergely}
+{Karácsony Gergely többek között arról is tárgyalt. Karácsik a Hevest alkalmatlan karrierje során kiderült, hogy az Alves, aki a Városházassá}
+\myrowb{Hadházy Ákos}
+{Hadházy Ákos az MSZP országúton halad az MSZP és a Jobbik között a kormánypárt között, de az LMP társelnöke is - írja az Indepézia a }
+\myrowb{Lázár János}
+{Lázár János szerint a kormány a kormány a kormányülése után az Európai Parlamentben elfogadja a kormányt, a kormánypártok szándéknyilatkozatot kap az uniós ciklon}
+\myrowb{Kósa Lajos}
+{Kósa Lajos közösen tartott sajtótájékoztatóján a Fidesz országos főpolgármester-választáson. Az MSZP választható volt a Jobbik országos választmányának elnöke - mondta az MSZP volt elnöké}
+\myrowb{Kövér László}
+{Kövér László házelnök a Szentendre tér és a Szent István tér között Szentendre tér közötti tér között a Budapesti Közigazság. Az Országgyűlés a Szentkirály}
+\myrowb{Vona Gábort}
+{Vona Gábort és Simbut is. Vona Gábor a Voda-e elleni European egyik legnépesebb játékosa volt.Az első ízből kiderül, }
+\myrowb{Rogán Antal}
+{Rogán Antal szerint az Európai Bizottság tagja a Nemzetközi Valottságának. A svájci kormány szerint Magyarország az Egyesült Királyság és Magyarország között a nemzetközi biztonsága szempontjából. Magyarország a Nemzetközi }
+\myrowb{Németh Szilárd}
+{Németh Szilárd és az Expedíció 2018-ban az elmúlt időszakban a világ legnagyobban - jelentette ki az Integrácia, az Exete-fejlesztések}
+\myrowb{Botka László}
+{Botka László Sportcsarnokban mutatkozott, a Sporting és a sportág a sportcsarnokban. Az úszószövetség honlapjának beszámolója: A FINA-s }
+\myrowb{Toroczkai László}
+{Toroczkai László vezetőedzője, Saul vezetőedző a kispesti Salt előtt. Salzban a szakember két héten belül két héttel a Salló elleni kedd}
+\myrowb{Gyurcsány Ferenc}
+{Gyurcsány Ferenc idején a Fidesz és a Gyurcsány- és Gyurcsány-párt között  a DVB által támogatott politikus cége a Gyurcsány- vagy a Gyur}
+\myrowb{Soros György}
+{Soros György firtató eredeti című, 2-1-re vezetett. A magyar fiú azonban csak egy éven keresztül ment a magyar rendőrök közé. A migráns}
+\myrowb{Mészáros Lőrinc}
+{Mészáros Lőrinc az orosz gyártmány a Moszkvai Autópályamodelljeiből kimondta, mennyit fog kerülni, hogy az orosz gyártmányok a tí}
+\myrowb{A Fidesz}
+{A Fidesz országa azt várja a kormánypárti politikusokat,a Fidesz országpárti frakció parlamenti frakciója,mely szerint nem az országa az országgyűlés előtt }
+\myrowb{A DK}
+{A DK elnöke a DK és az olimpiai bajnok vízilabdázónak adott interjút. A sport a sport és az elmúlt években számtalan olimpikon jól szerepelt}
+\myrowb{A Momentum}
+{A Momentum EP képviselője szerint nincs a Mozgalom baloldal pártjai a Sorost választották meg az európai kormánypártban, a baloldal által támogatott" pártja}
+\myrowb{A Jobbik}
+{A Jobbik elnöke a múlt hét végi megnyitotta - mondta Kövér László. Kövér László, a párt elnöke a budapesti elnöki széklet érinti }
+\myrowb{A MSZP}
+{A MSZP és Udvarizonban találkozik a kormány, hogy az LMP, az MSZP és Magyarország számára is az LMP az Együtt-szebb kampány}
+\myrowb{Az LMP}
+{Az LMP a Jobbik frakciója szerint a Jobbikkal való közös pártból és a párt közös politikusa. Az LMP-nek az Egyoldalú pártban van. Az }
+\myrowb{A Mi Hazánk}
+{A Mi Hazánk és az ősi értéket is láthatunk egy kis édes fagy, amelynek elkészítéséhez, a modern technológia. Aki nem tud a Windows 7. generáció}
+\myrowb{A Kétfarkú Kutyapárt}
+{A Kétfarkú Kutyapárt az Egyesült Államokban. Az idén már a megszoktak, hogy a résztvevő az időjárási körülmények ellenére a szárazföldi és az előrejelzések szerint is erősen felhős, }
+\myrowb{A Párbeszéd}
+{A Párbeszéd Magyarországról és az Együtt elnöke is azt mondták: Magyarországért, a Magyar Közösségben és a Magyar Közösségnek tartott hétfőig Szövetség}
+\end{tabular}
+\caption{Text generated for various prompts by the Origo model.}
+\label{fig:prompt_origo}
+\end{table*}
+
+
 
 \section{Future possibilities}
 It was clear from the training process that the greatest bottleneck of the project were the limited resources. In terms of complexity and number of layers, our model was tiny compared to state-of-the-art solutions, such as GPT-3. Such models are trained with millions of dollars worth of data and computing power. Given sufficient computing resources, the output text can be improved in quality. Th
