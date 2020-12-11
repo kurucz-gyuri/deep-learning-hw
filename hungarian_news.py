@@ -20,12 +20,12 @@ MAX_LENGTH = 256
 
 rel = 0
 
-def load_raw_training_data():
+def load_raw_training_data(key = 'origo'):
     print("Loading raw training data into memory")
     def load_data(filename):
         with open(filename, 'r') as f:
             return tf.data.Dataset.from_tensor_slices(list([i.strip().encode() for i in f]))
-    train_examples, val_examples = load_data('data/origo_train.txt'), load_data('data/origo_valid.txt')
+    train_examples, val_examples = load_data(f'data/{key}_train.txt'), load_data(f'data/{key}_valid.txt')
     return (train_examples, val_examples)
 
 def get_tokenizer(raw_training_data):
@@ -134,7 +134,11 @@ class EpochCallback(tf.keras.callbacks.Callback):
         self.fn = fn
     def on_epoch_begin(self, epoch, logs=None):
         self.fn(epoch, logs)
-
+    def on_epoch_end(self, epoch, logs=None):
+        with open('history_log.json', 'a') as f:
+            f.write(f'epoch {epoch}: ')
+            f.write(json.dumps(logs))
+            f.write('\n')
 
 def train(model, tokenizer, training_data, epochs = 10, load = True, steps_per_epoch = None):
     print(f'training; devices: {tf.config.list_physical_devices()}')
@@ -165,7 +169,7 @@ def train(model, tokenizer, training_data, epochs = 10, load = True, steps_per_e
         validation_data = val_dataset,
         epochs = epochs,
         steps_per_epoch = steps_per_epoch,
-        validation_steps = 50,
+        validation_steps = 100 if steps_per_epoch is None else 1,
         callbacks = [ checkpoint, EpochCallback(on_epoch) ]
     )
     with open('trainHistory.json', 'w') as f:
