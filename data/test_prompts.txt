@@ -1,8 +1,6 @@
 # Népszerűségi indexen szereplő közéleti szereplők
 # source: https://magyarnemzet.hu/archivum/belfold-archivum/iranytu-intezet-ader-janos-helyet-varga-mihaly-foglalta-el-3885618/
 # source: https://index.hu/belfold/2017/02/27/botka_nepszerubb_orban_viktornal/
-Soros György
-Mészáros Lőrinc
 Áder János
 Varga Mihály
 Tarlós István
@@ -19,6 +17,8 @@ Németh Szilárd
 Botka László
 Toroczkai László
 Gyurcsány Ferenc
+Soros György
+Mészáros Lőrinc
 
 # Ismertebb pártok
 # source: https://444.hu/2020/01/25/zavecz-csokken-a-fidesz-tabora-de-ettol-nem-lett-erosebb-az-ellenzek

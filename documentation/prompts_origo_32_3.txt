@@ -1,0 +1,103 @@
+2020-12-11 17:55:26.482955: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+Loading raw training data into memory
+2020-12-11 17:55:28.293914: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2020-12-11 17:55:28.598475: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.598862: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:01:00.0 name: GeForce GTX 950 computeCapability: 5.2
+coreClock: 1.2405GHz coreCount: 6 deviceMemorySize: 1.95GiB deviceMemoryBandwidth: 98.50GiB/s
+2020-12-11 17:55:28.598916: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2020-12-11 17:55:28.601590: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2020-12-11 17:55:28.602526: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2020-12-11 17:55:28.602875: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2020-12-11 17:55:28.605015: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.11
+2020-12-11 17:55:28.605606: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2020-12-11 17:55:28.605826: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2020-12-11 17:55:28.605976: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.606307: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.606562: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2020-12-11 17:55:28.606874: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2020-12-11 17:55:28.611504: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 3393395000 Hz
+2020-12-11 17:55:28.611760: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x5609b1f02250 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-12-11 17:55:28.611783: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2020-12-11 17:55:28.647736: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.648200: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x5609b0974b20 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2020-12-11 17:55:28.648224: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): GeForce GTX 950, Compute Capability 5.2
+2020-12-11 17:55:28.648420: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.648653: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:01:00.0 name: GeForce GTX 950 computeCapability: 5.2
+coreClock: 1.2405GHz coreCount: 6 deviceMemorySize: 1.95GiB deviceMemoryBandwidth: 98.50GiB/s
+2020-12-11 17:55:28.648686: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2020-12-11 17:55:28.648714: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2020-12-11 17:55:28.648729: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2020-12-11 17:55:28.648742: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2020-12-11 17:55:28.648756: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.11
+2020-12-11 17:55:28.648771: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2020-12-11 17:55:28.648786: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2020-12-11 17:55:28.648829: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.649062: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.649266: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2020-12-11 17:55:28.649299: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2020-12-11 17:55:28.966273: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-12-11 17:55:28.966309: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 
+2020-12-11 17:55:28.966315: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N 
+2020-12-11 17:55:28.966640: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.967025: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:55:28.967348: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1402] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 1647 MB memory) -> physical GPU (device: 0, name: GeForce GTX 950, pci bus id: 0000:01:00.0, compute capability: 5.2)
+2020-12-11 17:55:28.967726: I tensorflow/core/common_runtime/process_util.cc:146] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+Loading tokenizer from file
+training; devices: [PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU'), PhysicalDevice(name='/physical_device:XLA_CPU:0', device_type='XLA_CPU'), PhysicalDevice(name='/physical_device:XLA_GPU:0', device_type='XLA_GPU'), PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU')]
+Prompt: Áder János 
+Generated: Áder János közte egy magyar bajnok, a magyar bajnok magyar focicsapata is megsérült, de az egész világon, a válogatott pedig az egyik legidősebezhető módon szeret
+Prompt: Varga Mihály 
+Generated: Varga Mihály nemzetgazdasági tárca jóvá váltja be a kormány a Nemzetgazdasági Szerhij LabdaLiga alapszakaszának első körébe került a magyar kormány és az N
+Prompt: Tarlós István 
+Generated: Tarlós István javaslat alapján a kormány engedi a kormány az új koronavírus-járvány terjedésének megakasztását és a kormánynak az új intézkedések bevezetésének tervét a 
+Prompt: Orbán Viktor 
+Generated: Orbán Viktor kormányfő a miniszterelnök ismét élő magyar ügyekben látogatott. Az Egyesült Államokkal kapcsolatban kapcsolatait és az Egyesült Királyok között, de nem tartják meg Magyarországról 
+Prompt: Navracsics Tibor 
+Generated: Navracsics Tibor közismert, a Honvéd elleni pénteki derekán tartják, hogy újra a kispadok lesznek - hangsúlyozta az ukrán Nemzetbiztonsági Ügyek Tanszé
+Prompt: Karácsony Gergely 
+Generated: Karácsony Gergely többek között arról is tárgyalt. Karácsik a Hevest alkalmatlan karrierje során kiderült, hogy az Alves, aki a Városházassá
+Prompt: Hadházy Ákos 
+Generated: Hadházy Ákos az MSZP országúton halad az MSZP és a Jobbik között a kormánypárt között, de az LMP társelnöke is - írja az Indepézia a 
+Prompt: Lázár János 
+Generated: Lázár János szerint a kormány a kormány a kormányülése után az Európai Parlamentben elfogadja a kormányt, a kormánypártok szándéknyilatkozatot kap az uniós ciklon
+Prompt: Kósa Lajos 
+Generated: Kósa Lajos közösen tartott sajtótájékoztatóján a Fidesz országos főpolgármester-választáson. Az MSZP választható volt a Jobbik országos választmányának elnöke - mondta az MSZP volt elnöké
+Prompt: Kövér László 
+Generated: Kövér László házelnök a Szentendre tér és a Szent István tér között Szentendre tér közötti tér között a Budapesti Közigazság. Az Országgyűlés a Szentkirály
+Prompt: Vona Gábort 
+Generated: Vona Gábort és Simbut is. Vona Gábor a Voda-e elleni European egyik legnépesebb játékosa volt.Az első ízből kiderül, 
+Prompt: Rogán Antal 
+Generated: Rogán Antal szerint az Európai Bizottság tagja a Nemzetközi Valottságának. A svájci kormány szerint Magyarország az Egyesült Királyság és Magyarország között a nemzetközi biztonsága szempontjából. Magyarország a Nemzetközi 
+Prompt: Németh Szilárd 
+Generated: Németh Szilárd és az Expedíció 2018-ban az elmúlt időszakban a világ legnagyobban - jelentette ki az Integrácia, az Exete-fejlesztések
+Prompt: Botka László 
+Generated: Botka László Sportcsarnokban mutatkozott, a Sporting és a sportág a sportcsarnokban. Az úszószövetség honlapjának beszámolója: A FINA-s 
+Prompt: Toroczkai László 
+Generated: Toroczkai László vezetőedzője, Saul vezetőedző a kispesti Salt előtt. Salzban a szakember két héten belül két héttel a Salló elleni kedd
+Prompt: Gyurcsány Ferenc 
+Generated: Gyurcsány Ferenc idején a Fidesz és a Gyurcsány- és Gyurcsány-párt között  a DVB által támogatott politikus cége a Gyurcsány- vagy a Gyur
+Prompt: Soros György 
+Generated: Soros György firtató eredeti című, 2-1-re vezetett. A magyar fiú azonban csak egy éven keresztül ment a magyar rendőrök közé. A migráns
+Prompt: Mészáros Lőrinc 
+Generated: Mészáros Lőrinc az orosz gyártmány a Moszkvai Autópályamodelljeiből kimondta, mennyit fog kerülni, hogy az orosz gyártmányok a tí
+Prompt: A Fidesz 
+Generated: A Fidesz országa azt várja a kormánypárti politikusokat,a Fidesz országpárti frakció parlamenti frakciója,mely szerint nem az országa az országgyűlés előtt 
+Prompt: A DK 
+Generated: A DK elnöke a DK és az olimpiai bajnok vízilabdázónak adott interjút. A sport a sport és az elmúlt években számtalan olimpikon jól szerepelt
+Prompt: A Momentum 
+Generated: A Momentum EP képviselője szerint nincs a Mozgalom baloldal pártjai a Sorost választották meg az európai kormánypártban, a baloldal által támogatott" pártja
+Prompt: A Jobbik 
+Generated: A Jobbik elnöke a múlt hét végi megnyitotta - mondta Kövér László. Kövér László, a párt elnöke a budapesti elnöki széklet érinti 
+Prompt: A MSZP 
+Generated: A MSZP és Udvarizonban találkozik a kormány, hogy az LMP, az MSZP és Magyarország számára is az LMP az Együtt-szebb kampány
+Prompt: Az LMP 
+Generated: Az LMP a Jobbik frakciója szerint a Jobbikkal való közös pártból és a párt közös politikusa. Az LMP-nek az Egyoldalú pártban van. Az 
+Prompt: A Mi Hazánk 
+Generated: A Mi Hazánk és az ősi értéket is láthatunk egy kis édes fagy, amelynek elkészítéséhez, a modern technológia. Aki nem tud a Windows 7. generáció
+Prompt: A Kétfarkú Kutyapárt 
+Generated: A Kétfarkú Kutyapárt az Egyesült Államokban. Az idén már a megszoktak, hogy a résztvevő az időjárási körülmények ellenére a szárazföldi és az előrejelzések szerint is erősen felhős, 
+Prompt: A Párbeszéd 
+Generated: A Párbeszéd Magyarországról és az Együtt elnöke is azt mondták: Magyarországért, a Magyar Közösségben és a Magyar Közösségnek tartott hétfőig Szövetség

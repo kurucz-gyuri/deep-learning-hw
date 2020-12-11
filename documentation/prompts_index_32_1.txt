@@ -1,0 +1,103 @@
+2020-12-11 17:52:23.100408: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+Loading raw training data into memory
+2020-12-11 17:52:26.159494: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2020-12-11 17:52:26.462661: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.462933: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:01:00.0 name: GeForce GTX 950 computeCapability: 5.2
+coreClock: 1.2405GHz coreCount: 6 deviceMemorySize: 1.95GiB deviceMemoryBandwidth: 98.50GiB/s
+2020-12-11 17:52:26.462954: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2020-12-11 17:52:26.465990: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2020-12-11 17:52:26.467009: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2020-12-11 17:52:26.467252: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2020-12-11 17:52:26.470100: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.11
+2020-12-11 17:52:26.470913: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2020-12-11 17:52:26.471100: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2020-12-11 17:52:26.471227: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.471539: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.471736: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2020-12-11 17:52:26.472029: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2020-12-11 17:52:26.477224: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 3393395000 Hz
+2020-12-11 17:52:26.477480: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55cce24f0ed0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-12-11 17:52:26.477499: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2020-12-11 17:52:26.512508: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.512981: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55cce2493b90 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2020-12-11 17:52:26.512997: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): GeForce GTX 950, Compute Capability 5.2
+2020-12-11 17:52:26.513280: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.513512: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:01:00.0 name: GeForce GTX 950 computeCapability: 5.2
+coreClock: 1.2405GHz coreCount: 6 deviceMemorySize: 1.95GiB deviceMemoryBandwidth: 98.50GiB/s
+2020-12-11 17:52:26.513543: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2020-12-11 17:52:26.513571: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2020-12-11 17:52:26.513593: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2020-12-11 17:52:26.513608: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2020-12-11 17:52:26.513622: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.11
+2020-12-11 17:52:26.513635: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2020-12-11 17:52:26.513647: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2020-12-11 17:52:26.513688: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.513946: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.514169: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1858] Adding visible gpu devices: 0
+2020-12-11 17:52:26.514195: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2020-12-11 17:52:26.826554: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-12-11 17:52:26.826586: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      0 
+2020-12-11 17:52:26.826591: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1276] 0:   N 
+2020-12-11 17:52:26.826903: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.827289: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:982] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-11 17:52:26.827560: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1402] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 1647 MB memory) -> physical GPU (device: 0, name: GeForce GTX 950, pci bus id: 0000:01:00.0, compute capability: 5.2)
+2020-12-11 17:52:26.827940: I tensorflow/core/common_runtime/process_util.cc:146] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+Loading tokenizer from file
+training; devices: [PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU'), PhysicalDevice(name='/physical_device:XLA_CPU:0', device_type='XLA_CPU'), PhysicalDevice(name='/physical_device:XLA_GPU:0', device_type='XLA_GPU'), PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU')]
+Prompt: Áder János 
+Generated: Áder János köztársasági elnök a köztársasági elnök által aláírt törvény szerint a törvény a törvény szerint a törvény szerint a törvény nem lehet a parlamentben, csak a 
+Prompt: Varga Mihály 
+Generated: Varga Mihály pénzügyminiszter a jövő héten a Pénzügyminisztériumtól kér tájékoztatást a Pénzügyminisztériumot, hogy a Pénzügyminisztériumtól 
+Prompt: Tarlós István 
+Generated: Tarlós István főpolgármester a Facebookon jelentette be, hogy a kormány nem támogatja a főpolgármester-jelölti kampányt, és a kampány egyik legfontosabb eleme a kampány 
+Prompt: Orbán Viktor 
+Generated: Orbán Viktor miniszterelnök a Facebook-oldalán jelentette be, hogy a kormány döntése értelmében a jövőben nem lehet majd a jövőben sem a jövőben sem folytatni, ha a kormány nem 
+Prompt: Navracsics Tibor 
+Generated: Navracsics Tibor a Fidesz kommunikációs igazgatója szerint a Fidesz kommunikációs igazgatója a következő hetekben azt mondta: a Fidesz kommunikációs igazgatójaként a következő hetekben már nem tudja folytat
+Prompt: Karácsony Gergely 
+Generated: Karácsony Gergely főpolgármester a Facebookon jelentette be, hogy a kormány nem támogatja a fővárosi közgyűlés döntését, és a főpolgármester szerint a fővárosi közgyűlés többsége a fővárosi 
+Prompt: Hadházy Ákos 
+Generated: Hadházy Ákos független országgyűlési képviselő a Facebook-oldalán jelentette be, hogy a kormány nem fogja elfogadni a megállapodást, ezért a kormány nem akarja elfogadni a megállapodást
+Prompt: Lázár János 
+Generated: Lázár János a Fidesz parlamenti frakciójának vezetője a Facebook-oldalán jelentette be, hogy a Fidesz kizárását kezdeményezi a parlamentben, mert a Fidesz nem tud többséget szerezn
+Prompt: Kósa Lajos 
+Generated: Kósa Lajos és Szatmáry Kristóf a Kósa Lajos által vezetett Fidesz-KDNP jelöltjeként nyerte meg a vasárnapi időközi 
+Prompt: Kövér László 
+Generated: Kövér László a Magyar Közlönyben megjelent határozat szerint a kormány a koronavírus-járvány elleni védekezés érdekében a kormány és a kormány között a gazdaságvédelmi intézkedésekről 
+Prompt: Vona Gábort 
+Generated: Vona Gábort a Jobbik frakcióvezetője és parlamenti képviselője a Jobbik frakcióvezetője, Vona Gábor frakcióvezető pedig azt mondta, hogy Vona a Jobbik frakció
+Prompt: Rogán Antal 
+Generated: Rogán Antal feleségének meggyilkolása miatt vádat emeltek egy férfi ellen, aki a feleségével együtt a feleségével együtt megölte feleségét, majd a holttest
+Prompt: Németh Szilárd 
+Generated: Németh Szilárd a Facebookon jelentette be, hogy a kormány nem támogatja a nemzeti konzultációt, és a kormány a nemzeti konzultáció kérdését a 
+Prompt: Botka László 
+Generated: Botka László szegedi polgármester a város közgyűlésén tartott sajtótájékoztatóján elmondta, hogy a közgyűlés többsége nem szavazhat meg a közgyűlés alakuló ülésére, és 
+Prompt: Toroczkai László 
+Generated: Toroczkai László fideszes polgármester a Facebook-oldalán jelentette be, hogy a Fidesz a jövőben nem kíván részt venni a választáson, ezért a Fidesz a jövőben is kíván indulni 
+Prompt: Gyurcsány Ferenc 
+Generated: Gyurcsány Ferenc a Demokratikus Koalíció listájának első helyén áll a DK listavezetőjével, Gyurcsány Ferenc volt miniszterelnökkel. Gy
+Prompt: Soros György 
+Generated: Soros György által alapított CEU-n a kormány által alapított CEU-n belül a CEU rektori pozícióját betöltő CEU rektori
+Prompt: Mészáros Lőrinc 
+Generated: Mészáros Lőrinc érdekeltségébe került a Mészáros Lőrinc tulajdonában lévő Talentis Group Zrt. tulajdonában lévő Talentis Gr
+Prompt: A Fidesz 
+Generated: A Fidesz támogatottsága a parlamenti választások eredménye szerint, a választók körében a választók körében a FideszKDNP a voksok 56,4 százaléká
+Prompt: A DK 
+Generated: A DK a héten bejelentette, hogy a Fidesz nem támogatja a túlóratörvényt, ezért a kormány a túlóratörvényt elfogadó javaslatokat a túlóratörvényt 
+Prompt: A Momentum 
+Generated: A Momentum Mozgalom elnöksége alatt a Jobbik és a Momentum is támogatta a párt EP-listáját. A párt EP-listájának második helyén
+Prompt: A Jobbik 
+Generated: A Jobbik közleményben jelentette be, hogy kilép a Jobbik frakciójából, mert a párt nem tartja be a Jobbik frakciójából való kilépését a Jobbik
+Prompt: A MSZP 
+Generated: A MSZP országos választmányi elnöke, Tóth Bertalan a Facebook-oldalán jelentette be, hogy a párt elnöksége alatt nem kíván részt venni a választáson, ezért 
+Prompt: Az LMP 
+Generated: Az LMP társelnöke, Ungár Péter a párt elnök-frakcióvezetője szerint a párt a következő hetekben már nem fogja elfogadni a párt elnöki pozícióját a következő 
+Prompt: A Mi Hazánk 
+Generated: A Mi Hazánk Mozgalom elnöke a párt európai parlamenti listájának 36. helyén szereplő Toroczkai Lászlónak, a párt elnökének tanácsadója szerint 
+Prompt: A Kétfarkú Kutyapárt 
+Generated: A Kétfarkú Kutyapárt a Facebook-oldalán jelentette be, hogy a párt a következő hetekben már nem fogja bejelenteni a párt új elnökének fiaskáját. A párt a Facebook-
+Prompt: A Párbeszéd 
+Generated: A Párbeszéd politikusai a hétvégén hazaküldték a Jobbikból a párt elnökjelöltjeit, miután a párt a múlt héten bejelentette, hogy a párt nem kíván részt 
