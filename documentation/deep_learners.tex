@@ -2,6 +2,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{cite}
 
 \usepackage[colorlinks,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
 
@@ -11,28 +12,19 @@
 
 \usepackage{graphicx}
 
-%% \jvol{XX}
-%% \jnum{XX}
-%% \paper{1234567}
-%% \pubyear{2020}
-%% \publisheddate{xxxx 00, 0000}
-%% \currentdate{xxxx 00, 0000}
-%% \doiinfo{TQE.2020.Doi Number}
-
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \setcounter{page}{1}
-%% \setcounter{secnumdepth}{0}
 
 
 \begin{document}
 
 
-\title{ Cracking the uncrackable: Generating Hungarian text using transformers } 
+\title{ Learning the unlearnable: Generating Hungarian text using transformers } 
 
 
 \author{György J. Author, György K. Author, and Márió Z. Author
-\thanks{This work was made as a final assignment for the subject ``Deep Learning in Practice with Python and LUA'' (course ID: VITMAV45) supervised by Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. }
+\thanks{This work was made as a final assignment for the subject ``Deep Learning in Practice with Python and LUA'' (course ID: BMEVITMAV45) supervised by Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. }
 \thanks{Gy. J. Author is a student of Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. (e-mail: jozsagyorgy@edu.bme.hu).}
 \thanks{Gy. K. Author is a student of Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. (e-mail: kurucz.gyorgy@edu.bme.hu).}
 \thanks{M. Z. Author is a student of Budapest University of Technology and Economics Faculty of Electrical Engineering and Informatics, 1117 Budapest, Magyar tudósok körútja 2. (e-mail: zellermario@edu.bme.hu).}}
@@ -43,7 +35,7 @@
 \maketitle
 
 \begin{abstract}
-The abstract should not exceed 250 words. This example is 250 words. See instructions give you guidelines for preparing papers for IEEE Transactions and Journals. Use this document as a template if you are using Microsoft {\bi Word} 6.0 or later. Otherwise, use this document as an instruction set. The electronic file of your paper will be formatted further at IEEE. Paper titles should be written in uppercase and lowercase letters, not all uppercase. Avoid writing long formulas with subscripts in the title; short formulas that identify the elements are fine (e.g., ``Nd--Fe--B''). Do not write ``(Invited)'' in the title. Full names of authors are preferred in the author field, but are not required. Put a space between authors' initials. The abstract must be a concise yet comprehensive reflection of what is in your article. In particular, the abstract must be self-contained, without abbreviations, footnotes, or references. It should be a microcosm of the full article. The abstract must be between 150--250 words. Be sure that you adhere to these limits; otherwise, you will need to edit your abstract accordingly. The abstract must be written as one paragraph, and should not contain displayed mathematical equations or tabular material. The abstract should include three or four different keywords or phrases, as this will help readers to find it. It is important to avoid over-repetition of such phrases as this can result in a page being rejected by search engines. Ensure that your abstract reads well and is grammatically correct.
+The prevalence of Natural Language Processing has grown drastically in the last decades. Today, NLP is used in a wide variety of applications. Companies use so-called chatbots for costumer interactions, capable of understanding and answering costumers' questions. Speech recognition software solutions help the disabled in online interactions, and contribute to the average user's user experience. Other applications include the translation, summarization, and extraction of text, and the detection of intent or urgency of texts. Generating syntactically sound text is a difficult exercise that has been studied in great length. Recently, developments in this field has allowed the creation of software capable of generating texts that pass the Turing-test in the form of GPT-3. However, most text generating agents are focused on the English language, while other, more complex languages have received less attention. In this assignment, we create a model for generating Hungarian news articles.
 \end{abstract}
 
 \begin{IEEEImpStatement}
@@ -72,17 +64,6 @@ Previous works have been focusing parts and aspects of the Hungarian language, s
 
 Furthermore, language processing models, such as BERT and GPT-2 require an immense amount of time and computer resources to learn the complex relations of language. Even GPT-2, the predecessor of GPT-3 struggled to generate lifelike texts, and understand human input, even though it was created with millions of dollars worth of technology and dozens of state-of-the-art experts in the field. We can not afford millions of dollars' worth of computer resources, having to use free alternatives, such as Google collab.
 
-\section{Previous works}
-\textbf{DESCRIPTION OF THE STATE OF NLP IN ACADEMIA: RNN, LSTM, TRANSFORMER, POSSIBLY A FEW PLUS CITATIONS OF USES OF SUCH MODELS. ALSO A PARAGRAPH OR TWO ABOUT BERT AND GPT-2 EACH}
-
-\subsection{RNNs}
-
-\subsection{Transformers}
-
-\subsection{GPT-3}
-
-\subsection{BERT}
-
 
 \section{Methodology}
 For implementing the text generating agent, we needed to solve multiple problems. The first challenge presented itself as databases of cleaned Hungarian texts don't exist. We needed to scrape it for ourselves. After collecting the data, we needed to design a model to generate the output text, given an initial prompt. Finally, we needed to train the network with the collected data, so that the model can learn the Hungarian language.  
@@ -92,9 +73,9 @@ Our initial plan was to use the database on \href{https://mek.oszk.hu/}{https://
 
 Our attention turned to popular Hungarian news sites, particularly \href{https://index.hu/}{https://index.hu/} and \href{https://www.origo.hu}{https://www.origo.hu}. These particular sites were ideal as they provided regular HTML paths and centralized pages containing all previous articles. 
 
-We first scraped all the links of articles written in the past 4 years from both outlets. Then, we proceeded to download the HTML body of all links gathered. This would have resulted in more than 300,000 origo articles and a similar amount of index articles. However, due to time constraints, we stopped the process prematurely, only gathering articles in the tens of thousands. Precisely, we used 15991 articles from origo and 62184 articles from index.
+We first scraped all the links of articles written in the past 4 years from both outlets. Then, we proceeded to download the HTML body of all links gathered. This would have resulted in more than 300,000 Origo articles and a similar amount of Index articles. However, due to time constraints, we stopped the process prematurely, only gathering articles in the tens of thousands. Precisely, we used 15991 articles from Origo and 62184 articles from Index.
 
-We separated the origo and index articles from each other, as they have vastly different styles. This separation meant that we could train our model later on to generate articles of different styles. 
+We separated the Origo and Index articles from each other, as they have vastly different styles. This separation meant that we could train our model later on to generate articles of different styles. 
 
 The data was reformatted, so that one article was exactly one line in the text file. This was to easily separate articles from each other.
 
@@ -107,9 +88,12 @@ The first option was a Recurrent Neural Network (RNN) with Long-Term Short Memor
 
 The second option was a Transformer\cite{vaswani2017attention} architecture. Transformers have recently been conceptualized, and have subsequently changed the landscape of Natural Language Processing. With the utilization of self-attention layers, transformer models are capable of establishing long-term connections between text tokens, even to the point of generating new tokens based on the entire previous generated output. The attention layers are built for parallel processing of data, speeding up the training process by utilizing GPU cores. The major downside of this approach is because of the architecture's novelty, no standard implementation exists, forcing us to implement the whole architecture ourselves. This results in the implementation being sub-optimal.
 
-We eventually decided to use a transformer-based network.\textbf{THIS IS WHERE A DESCRIPTION OF THE ARCHITECTURE COMES} 
+We eventually decided to use a transformer-based network. The implementation is based on the original paper\cite{vaswani2017attention} describing the architecture. We used positional encoding according to the paper, and the decoder uses multi-headed attention layers that are activated by Dropout\cite{overfitting} layers and normalized via Layer Normalization\cite{ba2016layer}. The transformer itself is modified from the original design, the biggest difference is the omission of the input embedding, as the output is generated as the continuation of the prompt.
 
 \subsection{Hyperparameter optimization}
+For optimizing the hyperparameters, we used the Keras Tuner library. The results of these tunings can be seen on Fig. \ref{fig:hp}. 
+
+In these graphs, ``dff'' denotes the size of the fully connected feed-forward network. ``num\_layers'' refers to the number of decoder layers. ``num\_heads'' is the number of attention heads and finally, ``d\_model\_per\_heads'' denotes the size of the input embedding divided by the number of attention heads.
 \begin{figure*}
 	\centering
   \includegraphics[width=0.45\linewidth]{fig/hp_dff.png}
@@ -118,9 +102,6 @@ We eventually decided to use a transformer-based network.\textbf{THIS IS WHERE A
   \caption{Accuracy as a function of the different hyperparameters.}
   \label{fig:hp}
 \end{figure*}
-
-\subsection{Training}
-\textbf{DESCRIPTION OF THE TRAINING PROCESS}
 
 \begin{figure*}
 \centering
@@ -151,11 +132,15 @@ We eventually decided to use a transformer-based network.\textbf{THIS IS WHERE A
 \myrow{epoch 29}{A spanyol labdarúgóliga csoportkörében, az Atléticoa Barcelona edzője, a címvédő Real Madridban címvédő Real Solarisnak az argentin, Neymarnak a}
 \end{tabular}
 \caption{Text generated for an empty prompt during the training of the Origo model.}
-\label{fig:training_index}
+\label{tab:training_origo}
 \end{table*}
 
 \section{Results}
-\textbf{RESULTS: DIAGRAMS, IMAGES, TEXT RESULTS TO SHOW LEARNING}
+After training our model of both data sets, we collected the results. The data shows that the model was able to learn Hungarian syntax as the training went on, as seen in Table \ref{tab:training_origo}. 
+
+An interesting observation can be made from Figures \ref{fig:training_origo} and \ref{fig:training_index}, as the validation loss started to increase in the Origo data set at around epoch 6. This, coupled with e fact that the training loss continued to decrease is a clear sign that the model started overfitting for the training data set. This does not happen on the Index data set, leading to us postulating that this is a result of the difference in size in those sets (for reference: the Origo data set contained 15991 articles, while the Index set contained 62184, a factor of 3.89). This result is also supported by the accuracy divergence in the Origo data set, a phenomenon not seen in the Index data set.
+
+To test the semantic learning of our model, we created a list of famous Hungarian politicians and parties, and fed the lists to the model one by one. To avoid very long articles, we maximized the generated text to at most 32 tokens. The result of these are contained in Tables \ref{fig:prompt_index} and \ref{fig:prompt_origo} We hypothesized that if the semantic understanding of the model was high, the generated articles would be highly different. Upon examining these generated texts, we found that the results were indeed different in tones and word usage, indicating our model's ability to pick up on semantic information and mannerisms.
 
 \subsection{Test prompts}
 For a list of interesting prompts, we sampled names and political parties from the following articles:
@@ -295,7 +280,7 @@ It was clear from the training process that the greatest bottleneck of the proje
 
 Another potential optimization strategy is the improvement of the model's parallelization capabilities. This, however is a highly complicated field, and implementing proper parallelization is prone to have errors without a sufficient suite of tests. For this reason, waiting for mainstream machine learning frameworks' implementation (such as TensorFlow\cite{tf}) is the safer alternative to parallelize.
 
-
+\clearpage
 \bibliography{cite}
 \bibliographystyle{alpha}
 
