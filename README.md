@@ -1,7 +1,7 @@
 # Deep Learning Homework
 For a demo, see `demo.py`.
 
-## Team
+## Team "deep_learners"
 - Kurucz György
 - Zeller Márió
 - Józsa György
