@@ -25,3 +25,6 @@ To get the data from origo.hu:
 To create final data files for training, validation, and testing:
 - We first used `scrape/filter_raw_data` to filter out any strange characters, and aggregate the whole dataset into a single file.
 - Then using `scrape/split_data` we split this file into separate training, testing, and validation datasets.
+
+## Documentation
+The documentation of the project can be found in the root directory of the project as documentation.pdf
