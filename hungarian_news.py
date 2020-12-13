@@ -14,13 +14,15 @@ import kerastuner
 import os
 import json
 
-# training parameters
+# training batch size
 BATCH_SIZE = 16
+
+# truncate each training example into this many tokens
 MAX_LENGTH = 256
 
-rel = 0
-
 def load_raw_training_data(key = 'origo'):
+    """Load raw training data (The dataset is specified with the 'key'
+    parameter. The default 'origo' dataset is included in this repository.)"""
     print("Loading raw training data into memory")
     def load_data(filename):
         with open(filename, 'r') as f:
@@ -29,6 +31,7 @@ def load_raw_training_data(key = 'origo'):
     return (train_examples, val_examples)
 
 def get_tokenizer(raw_training_data):
+    """Construct the subword encoding tokenizer from the dataset."""
     tokenizer_file = "tokenizer_hu"
     if os.path.isfile(tokenizer_file + '.subwords'):
         print("Loading tokenizer from file")
@@ -42,6 +45,8 @@ def get_tokenizer(raw_training_data):
     return tokenizer_hu
 
 def build_training_data(raw_training_data, tokenizer_hu):
+    """Transform the raw training data with the tokenizer, into a form that can
+    be consumed by the model."""
     raw_train, raw_val = raw_training_data
 
     def encode(lang1):
@@ -70,6 +75,7 @@ def build_training_data(raw_training_data, tokenizer_hu):
     return (ds_train, ds_val)
 
 def get_range_hp():
+    """Get hyperparemeter object for hyperparameter optimization"""
     hp = kerastuner.engine.hyperparameters.HyperParameters()
     hp.Int('num_layers', min_value=1, max_value=4),
     hp.Int('d_model_per_heads', min_value=32, max_value=128, step=64),
@@ -77,6 +83,7 @@ def get_range_hp():
     hp.Int('dff', min_value=32, max_value=512, step=32),
     return hp
 def get_fixed_hp():
+    """Get hyperparameter object with generally good default values."""
     # Values obtained by hyperparameter optimization
     hp = kerastuner.engine.hyperparameters.HyperParameters()
     hp.Fixed('num_layers', 2),
@@ -86,13 +93,14 @@ def get_fixed_hp():
     return hp
 
 def get_model_builder(tokenizer):
+    """Get the model builder function."""
     def build_model(hp):
         # transformer hyperparameters
         # num_layers: number of decoder layers
         # d_model: embedding dimension
         # num_heads: number of attention heads
         # dff: neurons in feed-forward sublayers
-        dropout_rate = 0.1 # TODO: hp
+        dropout_rate = 0.1
 
         target_vocab_size = tokenizer.vocab_size + 2
         model = trf.Transformer(
@@ -109,6 +117,7 @@ def get_model_builder(tokenizer):
     return build_model
 
 def get_tuner(build_model):
+    """Construct the tuner object used for hyperparameter optimization."""
     tuner = kerastuner.tuners.Hyperband(
         build_model,
         hyperparameters = get_range_hp(),
@@ -120,6 +129,7 @@ def get_tuner(build_model):
     return tuner
 
 def hp_optim(tuner, training_data):
+    """Run hyperparemeter optimization."""
     train_dataset, val_dataset = training_data
     tuner.search(
         train_dataset,
@@ -129,18 +139,22 @@ def hp_optim(tuner, training_data):
         validation_steps = 20,
     )
 
+# custom epoch start/end callback object
 class EpochCallback(tf.keras.callbacks.Callback):
     def __init__(self, fn):
         self.fn = fn
     def on_epoch_begin(self, epoch, logs=None):
+        # run custom epoch begin function
         self.fn(epoch, logs)
     def on_epoch_end(self, epoch, logs=None):
+        # save metrics after each epoch
         with open('history_log.json', 'a') as f:
             f.write(f'epoch {epoch}: ')
             f.write(json.dumps(logs))
             f.write('\n')
 
 def train(model, tokenizer, training_data, epochs = 10, load = True, steps_per_epoch = None):
+    """Train the model."""
     print(f'training; devices: {tf.config.list_physical_devices()}')
     train_dataset, val_dataset = training_data
 
@@ -153,6 +167,7 @@ def train(model, tokenizer, training_data, epochs = 10, load = True, steps_per_e
     )
 
     def on_epoch(epoch, logs):
+        # generate a sequence with the model for an empty prompt, and save it
         prompt = ""
         max_len = 32
         top_k = 3
@@ -177,6 +192,8 @@ def train(model, tokenizer, training_data, epochs = 10, load = True, steps_per_e
     return history
 
 def evaluate(transformer, tokenizer, prompt, max_len, top_k):
+    """Evaluate the model for a given prompt, and return the resulting
+    tokens."""
     decoder_input = [tokenizer.vocab_size] + tokenizer.encode(prompt)
     output = tf.expand_dims(decoder_input, 0)
 
@@ -206,6 +223,9 @@ def evaluate(transformer, tokenizer, prompt, max_len, top_k):
     return tf.squeeze(output, axis=0), attention_weights
 
 def generate(transformer, tokenizer, prompt, max_len = 32, top_k = 3):
+    """Evaluate the model for a given prompt, and print the generated text.
+    max_len: maximum number of tokens to generate
+    top_k: value to use for top-k sampling."""
     result, attention_weights = evaluate(transformer, tokenizer, prompt, max_len, top_k)
 
     # print(f'Tokens: {result}')
@@ -214,6 +234,7 @@ def generate(transformer, tokenizer, prompt, max_len = 32, top_k = 3):
     print(f'Generated: {predicted_sentence}')
 
 def generate_test_prompts(model, tokenizer, max_len = 32, top_k = 3):
+    """Print generated text for a number of predefined prompts."""
     with open('data/test_prompts.txt', 'r') as f:
         for line in f:
             if line[0] == '#': continue

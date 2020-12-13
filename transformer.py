@@ -223,7 +223,7 @@ class Transformer(tf.keras.Model):
                                target_vocab_size, pe_target, rate)
 
         self.final_layer = tf.keras.layers.Dense(target_vocab_size)
-        
+
         self.d_model = d_model
 
     def compile(self):
@@ -292,6 +292,7 @@ class Transformer(tf.keras.Model):
         self.train_accuracy(accuracy)
         return { 'loss': loss, 'accuracy': accuracy }
 
+# The custom learning schedule featured in the orignal Transformer paper
 class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
   def __init__(self, d_model, warmup_steps=4000):
     super(CustomSchedule, self).__init__()
