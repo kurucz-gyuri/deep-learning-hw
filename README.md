@@ -28,3 +28,5 @@ To create final data files for training, validation, and testing:
 
 ## Documentation
 The documentation of the project can be found in the root directory of the project as documentation.pdf
+
+[Hungarian demo video](https://youtu.be/kFNJrRwtdbw)
